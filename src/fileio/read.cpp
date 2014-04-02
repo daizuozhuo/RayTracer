@@ -23,6 +23,8 @@
 
 typedef map<string,Material*> mmap;
 
+#define tuple parse::tuple
+
 static void processObject( Obj *obj, Scene *scene, mmap& materials );
 static Obj *getColorField( Obj *obj );
 static Obj *getField( Obj *obj, const string& name );
@@ -553,3 +555,5 @@ static void processObject( Obj *obj, Scene *scene, mmap& materials )
 		throw ParseError( string( "Unrecognized object: " ) + name );
 	}
 }
+
+#undef tuple

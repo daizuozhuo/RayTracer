@@ -30,7 +30,10 @@ inline ostream& operator <<( ostream& os, const Exception& x )
 
 class Obj;
 
+namespace parse {
 typedef vector<Obj*> 		tuple;
+};
+#define tuple parse::tuple
 typedef map<string,Obj*> 	dict;
 
 class ParseError
@@ -262,5 +265,7 @@ private:
 };
 
 Obj *readFile( istream& is );
+
+#undef tuple
 
 #endif // __PARSE_H__
