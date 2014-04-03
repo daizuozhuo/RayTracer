@@ -17,7 +17,7 @@ vec3f RayTracer::trace( Scene *scene, double x, double y )
 {
     ray r( vec3f(0,0,0), vec3f(0,0,0) );
     scene->getCamera()->rayThrough( x,y,r );
-	return traceRay( scene, r, vec3f(1.0,1.0,1.0), 0 ).clamp();
+	return traceRay( scene, r, vec3f(1.0,1.0,1.0), 2 ).clamp();
 }
 
 // Do recursive ray tracing!  You'll want to insert a lot of code here
@@ -26,8 +26,7 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 	const vec3f& thresh, int depth )
 {
 	isect i;
-
-	if( scene->intersect( r, i ) ) {
+	if( depth>0 && scene->intersect( r, i ) ) {
 		// YOUR CODE HERE
 
 		// An intersection occured!  We've got work to do.  For now,
@@ -38,10 +37,18 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		// Instead of just returning the result of shade(), add some
 		// more steps: add in the contributions from reflected and refracted
 		// rays.
-
+		
 		const Material& m = i.getMaterial();
-		return m.shade(scene, r, i);
-	
+		vec3f color = m.shade(scene, r, i);
+		//calculate the reflected ray
+		vec3f d = r.getDirection();
+		vec3f p = r.getPosition();
+		vec3f position = r.at(i.t);
+		vec3f direction = d - 2 * i.N * d.dot(i.N);
+		ray newray(position, direction);
+		color = color + traceRay(scene, newray, thresh, depth-1);
+		return color;
+
 	} else {
 		// No intersection.  This ray travels to infinity, so we color
 		// it according to the background color, which in this (simple) case

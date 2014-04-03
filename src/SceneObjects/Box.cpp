@@ -28,6 +28,18 @@ bool Box::intersectLocal( const ray& r, isect& i ) const
 	max = std::max( std::max(tmin[0], tmin[1]), tmin[2]);
 	if(max > min) return false;
 	i.obj = this;
-	i.t = max;
+	vec3f N(0, 0, 0);
+	if(max > 0) {
+		i.t = max;
+		for(int i=0; i<3; i++) {
+			if(tmin[i] == max) { N[i] = -1; break; }
+		}
+	} else {
+		i.t = min;
+		for(int i=0; i<3; i++) {
+			if(tmin[i] == max) { N[i] = 1; break; }
+		}
+	}
+	i.N = N;
 	return true;
 }
