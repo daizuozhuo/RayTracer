@@ -1,2 +1,3 @@
 RayTracer
 =========
+[x] box intersection
