@@ -1,4 +1,4 @@
-#include "ray.h"
+﻿#include "ray.h"
 #include "material.h"
 #include "light.h"
 
@@ -18,5 +18,22 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
     // You will need to call both distanceAttenuation() and shadowAttenuation()
     // somewhere in your code in order to compute shadows and light falloff.
 
-	return kd;
+	vec3f point = r.at(i.t);
+	vec3f I = ke;
+	list<Light*>::const_iterator begin, end;
+	for(begin=scene->beginLights(), end=scene->endLights(); begin!=end; begin++) {
+		vec3f atten = (*begin)->shadowAttenuation(point) * (*begin)->distanceAttenuation(point);
+		vec3f L = (*begin)->getDirection(point);
+		double NL = i.N.dot(L);
+
+		//diffuse
+		I += (atten * NL).multiply(kd).clamp();
+
+		//specular
+		vec3f R = i.N * (2 * NL) - L;
+		double RV = -R.dot(r.getDirection());
+		double n = 64;
+		I += (atten * pow(RV, n)).multiply(ks).clamp();
+	}
+	return I;
 }

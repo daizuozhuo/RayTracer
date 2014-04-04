@@ -8,7 +8,7 @@ Camera::Camera()
     aspectRatio = 1;
     normalizedHeight = 1;
     
-    eye = vec3f(0,0,0);
+    eye = vec3f(0,0,1);
     u = vec3f( 1,0,0 );
     v = vec3f( 0,1,0 );
     look = vec3f( 0,0,-1 );

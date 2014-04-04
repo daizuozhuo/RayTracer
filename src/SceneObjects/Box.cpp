@@ -5,9 +5,6 @@
 
 bool Box::intersectLocal( const ray& r, isect& i ) const
 {
-	// YOUR CODE HERE:
-    // Add box intersection code here.
-	// it currently ignores all boxes and just returns false.
 	vec3f p = r.getPosition();
 	vec3f d = r.getDirection();
 
@@ -26,7 +23,7 @@ bool Box::intersectLocal( const ray& r, isect& i ) const
 	//min of tmax, max of tmin
 	min = std::min( std::min(tmax[0], tmax[1]), tmax[2]);
 	max = std::max( std::max(tmin[0], tmin[1]), tmin[2]);
-	if(max > min) return false;
+	if(max > min || min<0) return false;
 	i.obj = this;
 	vec3f N(0, 0, 0);
 	if(max > 0) {
@@ -37,9 +34,10 @@ bool Box::intersectLocal( const ray& r, isect& i ) const
 	} else {
 		i.t = min;
 		for(int i=0; i<3; i++) {
-			if(tmin[i] == max) { N[i] = 1; break; }
+			if(tmax[i] == min) { N[i] = 1; break; }
 		}
 	}
 	i.N = N;
 	return true;
 }
+

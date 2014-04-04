@@ -53,7 +53,9 @@ public:
 		{ n[0] *= d; n[1] *= d; n[2] *= d; return *this; }
 	vec3f& operator /= ( const double d )
 		{ n[0] /= d; n[1] /= d; n[2] /= d; return *this; }
-
+	
+	vec3f multiply(const vec3f& v) const
+		{ return vec3f(n[0]*v[0], n[1]*v[1], n[2]*v[2]); }
 	double& operator []( int i )
 		{ return n[i]; }
 	double operator []( int i ) const 

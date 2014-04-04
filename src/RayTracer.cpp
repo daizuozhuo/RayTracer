@@ -42,11 +42,11 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		vec3f color = m.shade(scene, r, i);
 		//calculate the reflected ray
 		vec3f d = r.getDirection();
-		vec3f p = r.getPosition();
 		vec3f position = r.at(i.t);
 		vec3f direction = d - 2 * i.N * d.dot(i.N);
 		ray newray(position, direction);
-		color = color + traceRay(scene, newray, thresh, depth-1);
+		vec3f reflect = m.kr.multiply(traceRay(scene, newray, thresh, depth-1).clamp());
+		color += reflect;
 		return color;
 
 	} else {
