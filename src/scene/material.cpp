@@ -28,7 +28,6 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 
 		//diffuse
 		I += (atten * NL).multiply(kd).clamp();
-
 		//specular
 		vec3f R = i.N * (2 * NL) - L;
 		double RV = -R.dot(r.getDirection());
