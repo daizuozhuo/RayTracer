@@ -87,6 +87,7 @@ public:
                                 // as in the case where the material was interpolated
 
     const Material &getMaterial() const;
+	bool isIn;
     // Other info here.
 };
 

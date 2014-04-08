@@ -17,13 +17,23 @@ vec3f RayTracer::trace( Scene *scene, double x, double y )
 {
     ray r( vec3f(0,0,0), vec3f(0,0,0) );
     scene->getCamera()->rayThrough( x,y,r );
+	//Judge if the starting point is in the air or in an object
+	isect i;
+	const SceneObject* obj;
+	bool inside = false;
+	if(scene->intersect(r, i)) {
+		obj = i.obj;
+		if(scene->intersect(r, i) && i.obj == obj) {
+			inside = true;
+		}
+	}
 	return traceRay( scene, r, vec3f(1.0,1.0,1.0), depth ).clamp();
 }
 
 // Do recursive ray tracing!  You'll want to insert a lot of code here
 // (or places called from here) to handle reflection, refraction, etc etc.
 vec3f RayTracer::traceRay( Scene *scene, const ray& r, 
-	const vec3f& thresh, int depth )
+	const vec3f& thresh, int depth, bool inside )
 {
 	isect i;
 	if( depth>=0 && scene->intersect( r, i ) ) {
@@ -45,8 +55,32 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		vec3f position = r.at(i.t);
 		vec3f direction = d - 2 * i.N * d.dot(i.N);
 		ray newray(position, direction);
-		vec3f reflect = m.kr.multiply(traceRay(scene, newray, thresh, depth-1).clamp());
+		vec3f reflect = m.kr.multiply(traceRay(scene, newray, thresh, depth-1, inside).clamp());
 		color += reflect;
+
+		//calculate the refracted ray
+		float ref_ratio;
+		float sin_ang = d.cross(i.N).length();
+		vec3f N = i.N;
+		if(inside) {
+			//Material to air
+			ref_ratio = m.index / 1.0;
+			N = -N;
+		}
+		else {
+			ref_ratio = 1.0 / m.index;
+		}
+
+		if(!m.kt.iszero() && (ref_ratio < 1.0 + RAY_EPSILON || sin_ang < 1.0 / ref_ratio + RAY_EPSILON)) {
+			//No total internal reflection
+			//We do refraction now
+			float c = N.dot(-d);
+			direction = (ref_ratio * c - sqrtf(1 - ref_ratio * ref_ratio * (1 - c * c))) * N + ref_ratio * d;
+			newray = ray(position, direction);
+			vec3f refraction = m.kt.multiply(traceRay(scene, newray, thresh, depth-1, !inside).clamp());
+			color += refraction;
+		}
+
 		return color;
 
 	} else {

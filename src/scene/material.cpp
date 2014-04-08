@@ -20,11 +20,12 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 
 	vec3f point = r.at(i.t);
 	vec3f I = ke;
+	vec3f trans_loss = vec3f(1.0, 1.0, 1.0) - kt;
 	list<Light*>::const_iterator begin, end;
 	//Ambient Shade
 	const AmbientLight *env = scene->getAmbientLight();
 	if(env) {
-		I += ka.multiply(env->getColor(vec3f()));
+		I += ka.multiply(env->getColor(vec3f())).multiply(trans_loss).clamp();
 	}
 
 	for(begin=scene->beginLights(), end=scene->endLights(); begin!=end; begin++) {
@@ -33,7 +34,7 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 		double NL = i.N.dot(L);
 
 		//diffuse
-		I += (atten * NL).multiply(kd).clamp();
+		I += (atten * NL).multiply(kd).multiply(trans_loss).clamp();
 		//specular
 		vec3f R = i.N * (2 * NL) - L;
 		double RV = -R.dot(r.getDirection());

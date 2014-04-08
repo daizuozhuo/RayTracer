@@ -16,7 +16,7 @@ vec3f DirectionalLight::shadowAttenuation( const vec3f& P ) const
 	ray r(P, d);
 	isect i;
 	while(scene->intersect(r, i)) {
-		col = col.multiply(i.material->kt.clamp());
+		col = col.multiply(i.getMaterial().kt.clamp());
 		if(col.iszero()) {
 			break;
 		}
@@ -62,7 +62,7 @@ vec3f PointLight::shadowAttenuation(const vec3f& P) const
 	ray r(P, d);
 	isect i;
 	while(dis >= RAY_EPSILON && scene->intersect(r, i)) {
-		col = col.multiply(i.material->kt.clamp());
+		col = col.multiply(i.getMaterial().kt.clamp());
 		if(col.iszero()) {
 			break;
 		}
