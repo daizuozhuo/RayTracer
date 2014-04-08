@@ -18,6 +18,7 @@ using namespace std;
 #include "../vecmath/vecmath.h"
 
 class Light;
+class AmbientLight;
 class Scene;
 
 class SceneElement
@@ -264,7 +265,8 @@ public:
 	void set( AmbientLight* light )
 	{ 
 		if(ambient_light) delete ambient_light;
-		ambient_light = light; }
+		ambient_light = light;
+	}
 
 	bool intersect( const ray& r, isect& i ) const;
 	void initScene();

@@ -134,8 +134,8 @@ Scene::~Scene()
 		delete (*l);
 	}
 
-	if( amblient_light ) {
-		delete amblient_light;
+	if( ambient_light ) {
+		delete ambient_light;
 	}
 }
 

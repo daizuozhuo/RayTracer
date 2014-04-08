@@ -84,14 +84,14 @@ vec3f AmbientLight::getColor( const vec3f& P ) const
 	return color;
 }
 
-vec3f PointLight::getDirection( const vec3f& P ) const
+vec3f AmbientLight::getDirection( const vec3f& P ) const
 {
 	// Never Used
 	return vec3f(1.0, 1.0, 1.0);
 }
 
 
-vec3f PointLight::shadowAttenuation(const vec3f& P) const
+vec3f AmbientLight::shadowAttenuation(const vec3f& P) const
 {
 	// Never Used
     return vec3f(1.0, 1.0, 1.0);
