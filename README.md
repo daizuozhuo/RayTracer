@@ -5,4 +5,4 @@ RayTracer
 - [x] Modify read.cpp to accomodate file format
 - [x] Shadow Attenuation
 - [x] refraction
-- [ ] distance scaling
+- [x] distance scaling

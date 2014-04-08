@@ -253,7 +253,7 @@ public:
 
 public:
 	Scene() 
-		: transformRoot(), objects(), lights(), ambient_light(NULL), scale(1.0) {}
+		: transformRoot(), objects(), lights(), ambient_light(NULL), scale(1.87) {}
 	virtual ~Scene();
 
 	void add( Geometry* obj )

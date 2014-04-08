@@ -12,19 +12,15 @@ double DirectionalLight::distanceAttenuation( const vec3f& P ) const
 vec3f DirectionalLight::shadowAttenuation( const vec3f& P ) const
 {
     vec3f d = getDirection(P);
-	vec3f col(1.0, 1.0, 1.0);
+	vec3f col = getColor(P);
 	ray r(P, d);
-	priority_queue<isect> i;
-	if(scene->intersectAll(r, i)) {
-		while(!i.empty()) {
-			isect t = i.top();
-			col = col.multiply(t.getMaterial().kt.clamp());
-			if(col.iszero()) {
-				break;
-			}
-			r = ray(r.at(t.t), d);
-			i.pop();
+	isect i;
+	while(scene->intersect(r, i)) {
+		col = col.multiply(i.getMaterial().kt.clamp());
+		if(col.iszero()) {
+			break;
 		}
+		r = ray(r.at(i.t), d);
 	}
 	return col;
 }
@@ -42,8 +38,8 @@ vec3f DirectionalLight::getDirection( const vec3f& P ) const
 
 double PointLight::distanceAttenuation( const vec3f& P ) const
 {
-	float distance = (position - P).length() * pow(10, scene->getScale());
-	return min(1.0, 1.0 / (atten_coeff.dot(vec3f(1, distance, distance * distance))));
+	float distance = (position - P).length();
+	return min(1.0,  pow(10, scene->getScale()) / (atten_coeff.dot(vec3f(1, distance, distance * distance))));
 }
 
 vec3f PointLight::getColor( const vec3f& P ) const
@@ -62,20 +58,16 @@ vec3f PointLight::shadowAttenuation(const vec3f& P) const
 {
     vec3f d = getDirection(P);
 	float dis = (position - P).length();
-	vec3f col(1.0, 1.0, 1.0);
+	vec3f col = getColor(P);
 	ray r(P, d);
-	priority_queue<isect> i;
-	if(dis >= RAY_EPSILON && scene->intersectAll(r, i)) {
-		while(!i.empty()) {
-			isect t = i.top();
-			col = col.multiply(t.getMaterial().kt.clamp());
-			if(col.iszero()) {
-				break;
-			}
-			dis -= t.t;
-			r = ray(r.at(t.t), d);
-			i.pop();
+	isect i;
+	while(dis >= RAY_EPSILON && !col.iszero() && scene->intersect(r, i)) {
+		dis -= i.t;
+		if(dis < RAY_EPSILON) {
+			break;
 		}
+		col = col.multiply(i.getMaterial().kt.clamp());
+		r = ray(r.at(i.t), d);
 	}
 	return col;
 }

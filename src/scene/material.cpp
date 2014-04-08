@@ -31,7 +31,7 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 	for(begin=scene->beginLights(), end=scene->endLights(); begin!=end; begin++) {
 		vec3f atten = (*begin)->shadowAttenuation(point) * (*begin)->distanceAttenuation(point);
 		vec3f L = (*begin)->getDirection(point);
-		double NL = max(i.N.dot(L), 0.0);
+		double NL = i.N.dot(L);
 
 		//diffuse
 		I += (atten * NL).multiply(kd).multiply(trans_loss).clamp();
@@ -41,5 +41,5 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 		double n = shininess * 128;
 		I += (atten * pow(RV, n)).multiply(ks).clamp();
 	}
-	return I.clamp();
+	return I;
 }

@@ -224,7 +224,7 @@ TraceUI::TraceUI() {
 	// init.
 	m_nDepth = 0;
 	m_nSize = 150;
-	m_fDisScale = 0.00;
+	m_fDisScale = 1.87;
 	m_mainWindow = new Fl_Window(100, 40, 380, 145, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
 		// install menu bar
@@ -268,7 +268,7 @@ TraceUI::TraceUI() {
 		m_disscaleSlider->step(0.01);
 		m_disscaleSlider->value(m_fDisScale);
 		m_disscaleSlider->align(FL_ALIGN_RIGHT);
-		m_disscaleSlider->callback(cb_depthSlides);
+		m_disscaleSlider->callback(cb_disscaleSlides);
 
 		m_renderButton = new Fl_Button(280, 27, 70, 25, "&Render");
 		m_renderButton->user_data((void*)(this));

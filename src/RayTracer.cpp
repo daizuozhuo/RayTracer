@@ -170,7 +170,7 @@ void RayTracer::traceSetup( int w, int h, int d, float scale )
 	memset( buffer, 0, w*h*3 );
 	depth = d;
 	if(scene) {
-		scale;
+		scene->setScale(scale);
 	}
 }
 
