@@ -92,6 +92,11 @@ void TraceUI::cb_depthSlides(Fl_Widget* o, void* v)
 	((TraceUI*)(o->user_data()))->m_nDepth=int( ((Fl_Slider *)o)->value() ) ;
 }
 
+void TraceUI::cb_disscaleSlides(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_fDisScale=float( ((Fl_Slider *)o)->value() ) ;
+}
+
 void TraceUI::cb_render(Fl_Widget* o, void* v)
 {
 	char buffer[256];
@@ -105,7 +110,7 @@ void TraceUI::cb_render(Fl_Widget* o, void* v)
 
 		pUI->m_traceGlWindow->show();
 
-		pUI->raytracer->traceSetup(width, height, pUI->getDepth());
+		pUI->raytracer->traceSetup(width, height, pUI->getDepth(), pUI->getDistScale());
 		
 		// Save the window label
 		const char *old_label = pUI->m_traceGlWindow->label();
@@ -195,6 +200,11 @@ int TraceUI::getDepth()
 	return m_nDepth;
 }
 
+float TraceUI::getDistScale()
+{
+	return m_fDisScale;
+}
+
 // menu definition
 Fl_Menu_Item TraceUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
@@ -214,10 +224,11 @@ TraceUI::TraceUI() {
 	// init.
 	m_nDepth = 0;
 	m_nSize = 150;
-	m_mainWindow = new Fl_Window(100, 40, 320, 100, "Ray <Not Loaded>");
+	m_fDisScale = 0.00;
+	m_mainWindow = new Fl_Window(100, 40, 380, 145, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
 		// install menu bar
-		m_menubar = new Fl_Menu_Bar(0, 0, 320, 25);
+		m_menubar = new Fl_Menu_Bar(0, 0, 380, 25);
 		m_menubar->menu(menuitems);
 
 		// install slider depth
@@ -246,11 +257,24 @@ TraceUI::TraceUI() {
 		m_sizeSlider->align(FL_ALIGN_RIGHT);
 		m_sizeSlider->callback(cb_sizeSlides);
 
-		m_renderButton = new Fl_Button(240, 27, 70, 25, "&Render");
+		// install slider distance scale
+		m_disscaleSlider = new Fl_Value_Slider(10, 80, 180, 20, "Distance Scale (Log 10)");
+		m_disscaleSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_disscaleSlider->type(FL_HOR_NICE_SLIDER);
+        m_disscaleSlider->labelfont(FL_COURIER);
+        m_disscaleSlider->labelsize(12);
+		m_disscaleSlider->minimum(-0.99);
+		m_disscaleSlider->maximum(3.00);
+		m_disscaleSlider->step(0.01);
+		m_disscaleSlider->value(m_fDisScale);
+		m_disscaleSlider->align(FL_ALIGN_RIGHT);
+		m_disscaleSlider->callback(cb_depthSlides);
+
+		m_renderButton = new Fl_Button(280, 27, 70, 25, "&Render");
 		m_renderButton->user_data((void*)(this));
 		m_renderButton->callback(cb_render);
 
-		m_stopButton = new Fl_Button(240, 55, 70, 25, "&Stop");
+		m_stopButton = new Fl_Button(280, 55, 70, 25, "&Stop");
 		m_stopButton->user_data((void*)(this));
 		m_stopButton->callback(cb_stop);
 

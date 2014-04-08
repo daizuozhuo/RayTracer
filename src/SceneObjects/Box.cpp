@@ -15,17 +15,17 @@ bool Box::intersectLocal( const ray& r, isect& i ) const
 	vec3f nmax(0, 0, 0);
 	double min;
 	double max;
-	for(int i=0; i<3; i++) {
-		if(d[i]>=0) {
-			tmin[i] = (bounds.min[i] - p[i]) / d[i];
-			tmax[i] = (bounds.max[i] - p[i]) / d[i];
-			nmin[i] = -1;	
-			nmax[i] = 1;
+	for(int j=0; j<3; j++) {
+		if(d[j]>=0) {
+			tmin[j] = (bounds.min[j] - p[j]) / d[j];
+			tmax[j] = (bounds.max[j] - p[j]) / d[j];
+			nmin[j] = -1;	
+			nmax[j] = 1;
 		} else {
-			tmin[i] = (bounds.max[i] - p[i]) / d[i];
-			tmax[i] = (bounds.min[i] - p[i]) / d[i];
-			nmin[i] = 1;
-			nmax[i] = -1;
+			tmin[j] = (bounds.max[j] - p[j]) / d[j];
+			tmax[j] = (bounds.min[j] - p[j]) / d[j];
+			nmin[j] = 1;
+			nmax[j] = -1;
 		}
 	}
 

@@ -18,7 +18,7 @@ public:
 
 	void getBuffer( unsigned char *&buf, int &w, int &h );
 	double aspectRatio();
-	void traceSetup( int w, int h, int d);
+	void traceSetup( int w, int h, int d, float scale);
 	void traceLines( int start = 0, int stop = 10000000 );
 	void tracePixel( int i, int j );
 
@@ -31,6 +31,7 @@ private:
 	int buffer_width, buffer_height;
 	int bufferSize;
 	int depth;
+	float dis_scale;
 	Scene *scene;
 
 	bool m_bSceneLoaded;

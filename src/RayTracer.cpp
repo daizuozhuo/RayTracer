@@ -156,7 +156,7 @@ bool RayTracer::loadScene( char* fn )
 	return true;
 }
 
-void RayTracer::traceSetup( int w, int h, int d )
+void RayTracer::traceSetup( int w, int h, int d, float scale )
 {
 	if( buffer_width != w || buffer_height != h )
 	{
@@ -169,6 +169,9 @@ void RayTracer::traceSetup( int w, int h, int d )
 	}
 	memset( buffer, 0, w*h*3 );
 	depth = d;
+	if(scene) {
+		scale;
+	}
 }
 
 void RayTracer::traceLines( int start, int stop )

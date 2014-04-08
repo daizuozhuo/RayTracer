@@ -78,6 +78,22 @@ public:
         return *this;
     }
 
+	bool operator<( const isect& other) const {
+		return t < other.t;
+	}
+	bool operator<=( const isect& other) const {
+		return t <= other.t;
+	}
+	bool operator>( const isect& other) const {
+		return t > other.t;
+	}
+	bool operator>=( const isect& other) const {
+		return t >= other.t;
+	}
+	bool operator==( const isect& other) const {
+		return t == other.t;
+	}
+
 public:
     const SceneObject 	*obj;
     double t;

@@ -9,6 +9,7 @@
 
 #include <list>
 #include <algorithm>
+#include <queue>
 
 using namespace std;
 
@@ -252,7 +253,7 @@ public:
 
 public:
 	Scene() 
-		: transformRoot(), objects(), lights(), ambient_light(NULL) {}
+		: transformRoot(), objects(), lights(), ambient_light(NULL), scale(1.0) {}
 	virtual ~Scene();
 
 	void add( Geometry* obj )
@@ -262,13 +263,13 @@ public:
 	}
 	void add( Light* light )
 	{ lights.push_back( light ); }
-	void set( AmbientLight* light )
-	{ 
-		if(ambient_light) delete ambient_light;
-		ambient_light = light;
+	void set( AmbientLight* light );
+	void setScale( float dis_scale ) {
+		scale = dis_scale;
 	}
 
 	bool intersect( const ray& r, isect& i ) const;
+	bool intersectAll( const ray& r, priority_queue<isect>& i ) const;
 	void initScene();
 
 	list<Light*>::const_iterator beginLights() const { return lights.begin(); }
@@ -277,7 +278,7 @@ public:
 	const AmbientLight* getAmbientLight() const { return ambient_light; }
         
 	Camera *getCamera() { return &camera; }
-
+	float getScale() { return scale; }
 	
 
 private:
@@ -287,6 +288,8 @@ private:
     list<Light*> lights;
     AmbientLight* ambient_light;
     Camera camera;
+
+	float scale;
 	
 	// Each object in the scene, provided that it has hasBoundingBoxCapability(),
 	// must fall within this bounding box.  Objects that don't have hasBoundingBoxCapability()

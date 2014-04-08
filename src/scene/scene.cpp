@@ -5,6 +5,7 @@
 #include "../ui/TraceUI.h"
 extern TraceUI* traceUI;
 
+
 void BoundingBox::operator=(const BoundingBox& target)
 {
 	min = target.min;
@@ -141,6 +142,36 @@ Scene::~Scene()
 
 // Get any intersection with an object.  Return information about the 
 // intersection through the reference parameter.
+bool Scene::intersectAll( const ray& r, priority_queue<isect>& i ) const {	typedef list<Geometry*>::const_iterator iter;
+	iter j;
+
+	isect cur;
+	bool have_one = false;
+
+	// try the non-bounded objects
+	for( j = nonboundedobjects.begin(); j != nonboundedobjects.end(); ++j ) {
+		if( (*j)->intersect( r, cur ) ) {
+			if( !have_one )
+				have_one = true;
+			i.push(cur);
+		}
+	}
+
+	// try the bounded objects
+	for( j = boundedobjects.begin(); j != boundedobjects.end(); ++j ) {
+		if( (*j)->intersect( r, cur ) ) {
+			if( !have_one )
+				have_one = true;
+			i.push(cur);
+		}
+	}
+
+
+	return have_one;
+}
+
+// Get any intersection with an object.  Return information about the 
+// intersection through the reference parameter.
 bool Scene::intersect( const ray& r, isect& i ) const
 {
 	typedef list<Geometry*>::const_iterator iter;
@@ -200,4 +231,10 @@ void Scene::initScene()
 		else
 			nonboundedobjects.push_back(*j);
 	}
+}
+
+void Scene::set(AmbientLight* light)
+{ 
+	if(ambient_light) delete ambient_light;
+	ambient_light = light;
 }
