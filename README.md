@@ -1,6 +1,6 @@
 RayTracer
 =========
-[x] box intersection
-[x] reflection
-[ ] Modify read.cpp to accomodate file format
-[ ] Shadow Attenuation
+- [x] box intersection
+- [x] reflection
+- [x] Modify read.cpp to accomodate file format
+- [x] Shadow Attenuation

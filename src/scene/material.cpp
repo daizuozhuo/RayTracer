@@ -21,6 +21,12 @@ vec3f Material::shade( Scene *scene, const ray& r, const isect& i ) const
 	vec3f point = r.at(i.t);
 	vec3f I = ke;
 	list<Light*>::const_iterator begin, end;
+	//Ambient Shade
+	const AmbientLight *env = scene->getAmbientLight();
+	if(env) {
+		I += ka.multiply(env->getColor(vec3f()));
+	}
+
 	for(begin=scene->beginLights(), end=scene->endLights(); begin!=end; begin++) {
 		vec3f atten = (*begin)->shadowAttenuation(point) * (*begin)->distanceAttenuation(point);
 		vec3f L = (*begin)->getDirection(point);

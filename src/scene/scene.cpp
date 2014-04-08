@@ -133,6 +133,10 @@ Scene::~Scene()
 	for( l = lights.begin(); l != lights.end(); ++l ) {
 		delete (*l);
 	}
+
+	if( amblient_light ) {
+		delete amblient_light;
+	}
 }
 
 // Get any intersection with an object.  Return information about the 

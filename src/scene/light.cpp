@@ -61,7 +61,7 @@ vec3f PointLight::shadowAttenuation(const vec3f& P) const
 	vec3f col(1.0, 1.0, 1.0);
 	ray r(P, d);
 	isect i;
-	while(dis > RAY_EPSILON && scene->intersect(r, i)) {
+	while(dis >= RAY_EPSILON && scene->intersect(r, i)) {
 		col = col.multiply(i.material->kt.clamp());
 		if(col.iszero()) {
 			break;
@@ -70,4 +70,29 @@ vec3f PointLight::shadowAttenuation(const vec3f& P) const
 		r = ray(r.at(i.t), d);
 	}
 	return col;
+}
+
+double AmbientLight::distanceAttenuation( const vec3f& P ) const
+{
+	// Never Used
+	return 1.0;
+}
+
+vec3f AmbientLight::getColor( const vec3f& P ) const
+{
+	// Color doesn't depend on P 
+	return color;
+}
+
+vec3f PointLight::getDirection( const vec3f& P ) const
+{
+	// Never Used
+	return vec3f(1.0, 1.0, 1.0);
+}
+
+
+vec3f PointLight::shadowAttenuation(const vec3f& P) const
+{
+	// Never Used
+    return vec3f(1.0, 1.0, 1.0);
 }
