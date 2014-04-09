@@ -97,6 +97,26 @@ void TraceUI::cb_disscaleSlides(Fl_Widget* o, void* v)
 	((TraceUI*)(o->user_data()))->m_fDisScale=float( ((Fl_Slider *)o)->value() ) ;
 }
 
+void TraceUI::cb_sampleSizeSlides(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nSampleSize=int( ((Fl_Slider *)o)->value() ) ;
+}
+
+void TraceUI::cb_modeChoice(Fl_Widget* o, void* v)
+{
+	TraceUI* pUI=((TraceUI *)(o->user_data()));
+
+	int type = (int)v;
+	if(type != TRACE_NORMAL) {
+		pUI->m_sampleSlider->activate();
+	}
+	else {
+		pUI->m_sampleSlider->deactivate();
+	}
+
+	pUI->raytracer->setMode((enum TraceMode)type);
+}
+
 void TraceUI::cb_render(Fl_Widget* o, void* v)
 {
 	char buffer[256];
@@ -220,19 +240,35 @@ Fl_Menu_Item TraceUI::menuitems[] = {
 	{ 0 }
 };
 
+Fl_Menu_Item TraceUI::traceModeMenu[NUM_TRACE_MODE+1] = {
+	{"Normal",						FL_ALT+'n', (Fl_Callback *)TraceUI::cb_modeChoice, (void *)TRACE_NORMAL},
+	{"Antialias Supersampling",	    FL_ALT+'s', (Fl_Callback *)TraceUI::cb_modeChoice, (void *)TRACE_ANTIALIAS_NORMAL},
+	{"Antialias Jittering",			FL_ALT+'j', (Fl_Callback *)TraceUI::cb_modeChoice, (void *)TRACE_JITTER},
+	{"Antialias Adaptive",			FL_ALT+'a', (Fl_Callback *)TraceUI::cb_modeChoice, (void *)TRACE_ADAPTIVE_ANTIALIAS},
+    {0}
+};
+
 TraceUI::TraceUI() {
 	// init.
 	m_nDepth = 0;
 	m_nSize = 150;
+	m_nSampleSize = 1;
 	m_fDisScale = 1.87;
-	m_mainWindow = new Fl_Window(100, 40, 380, 145, "Ray <Not Loaded>");
+	m_mainWindow = new Fl_Window(100, 40, 380, 170, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
 		// install menu bar
 		m_menubar = new Fl_Menu_Bar(0, 0, 380, 25);
 		m_menubar->menu(menuitems);
 
+		// install mode chooser
+		m_modeChooser = new Fl_Choice(10, 30, 180, 20, "Trace Mode");
+		m_modeChooser->user_data((void*)(this));
+		m_modeChooser->menu(traceModeMenu);
+		m_modeChooser->align(FL_ALIGN_RIGHT);
+		m_modeChooser->callback(cb_modeChoice);
+
 		// install slider depth
-		m_depthSlider = new Fl_Value_Slider(10, 30, 180, 20, "Depth");
+		m_depthSlider = new Fl_Value_Slider(10, 55, 180, 20, "Depth");
 		m_depthSlider->user_data((void*)(this));	// record self to be used by static callback functions
 		m_depthSlider->type(FL_HOR_NICE_SLIDER);
         m_depthSlider->labelfont(FL_COURIER);
@@ -245,7 +281,7 @@ TraceUI::TraceUI() {
 		m_depthSlider->callback(cb_depthSlides);
 
 		// install slider size
-		m_sizeSlider = new Fl_Value_Slider(10, 55, 180, 20, "Size");
+		m_sizeSlider = new Fl_Value_Slider(10, 80, 180, 20, "Size");
 		m_sizeSlider->user_data((void*)(this));	// record self to be used by static callback functions
 		m_sizeSlider->type(FL_HOR_NICE_SLIDER);
         m_sizeSlider->labelfont(FL_COURIER);
@@ -258,7 +294,7 @@ TraceUI::TraceUI() {
 		m_sizeSlider->callback(cb_sizeSlides);
 
 		// install slider distance scale
-		m_disscaleSlider = new Fl_Value_Slider(10, 80, 180, 20, "Distance Scale (Log 10)");
+		m_disscaleSlider = new Fl_Value_Slider(10, 105, 180, 20, "Distance Scale (Log 10)");
 		m_disscaleSlider->user_data((void*)(this));	// record self to be used by static callback functions
 		m_disscaleSlider->type(FL_HOR_NICE_SLIDER);
         m_disscaleSlider->labelfont(FL_COURIER);
@@ -270,11 +306,25 @@ TraceUI::TraceUI() {
 		m_disscaleSlider->align(FL_ALIGN_RIGHT);
 		m_disscaleSlider->callback(cb_disscaleSlides);
 
-		m_renderButton = new Fl_Button(280, 27, 70, 25, "&Render");
+		// install slider sample size
+		m_sampleSlider = new Fl_Value_Slider(10, 130, 180, 20, "Sample Size");
+		m_sampleSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_sampleSlider->type(FL_HOR_NICE_SLIDER);
+        m_sampleSlider->labelfont(FL_COURIER);
+        m_sampleSlider->labelsize(12);
+		m_sampleSlider->minimum(1);
+		m_sampleSlider->maximum(5);
+		m_sampleSlider->step(1);
+		m_sampleSlider->value(m_nSampleSize);
+		m_sampleSlider->align(FL_ALIGN_RIGHT);
+		m_sampleSlider->callback(cb_sampleSizeSlides);
+		m_sampleSlider->deactivate();
+
+		m_renderButton = new Fl_Button(280, 52, 70, 25, "&Render");
 		m_renderButton->user_data((void*)(this));
 		m_renderButton->callback(cb_render);
 
-		m_stopButton = new Fl_Button(280, 55, 70, 25, "&Stop");
+		m_stopButton = new Fl_Button(280, 80, 70, 25, "&Stop");
 		m_stopButton->user_data((void*)(this));
 		m_stopButton->callback(cb_stop);
 

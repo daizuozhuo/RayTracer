@@ -15,27 +15,29 @@
 // in an initial ray weight of (0.0,0.0,0.0) and an initial recursion depth of 0.
 vec3f RayTracer::trace( Scene *scene, double x, double y )
 {
+	isect i;
+	return trace(scene, x, y, i);
+}
+vec3f RayTracer::trace( Scene *scene, double x, double y, isect& i )
+{
     ray r( vec3f(0,0,0), vec3f(0,0,0) );
     scene->getCamera()->rayThrough( x,y,r );
 	//Judge if the starting point is in the air or in an object
-	isect i;
-	const SceneObject* obj;
-	bool inside = false;
-	if(scene->intersect(r, i)) {
-		obj = i.obj;
-		if(scene->intersect(r, i) && i.obj == obj) {
-			inside = true;
-		}
-	}
-	return traceRay( scene, r, vec3f(1.0,1.0,1.0), depth ).clamp();
+	vector<const SceneObject*> stack;
+	return traceRay( scene, r, vec3f(1.0,1.0,1.0), depth, i, stack).clamp();
 }
 
 // Do recursive ray tracing!  You'll want to insert a lot of code here
 // (or places called from here) to handle reflection, refraction, etc etc.
 vec3f RayTracer::traceRay( Scene *scene, const ray& r, 
-	const vec3f& thresh, int depth, bool inside )
+	const vec3f& thresh, int depth, vector<const SceneObject*>& stack )
 {
 	isect i;
+	return traceRay(scene, r, thresh, depth, i, stack);
+}
+vec3f RayTracer::traceRay( Scene *scene, const ray& r, 
+	const vec3f& thresh, int depth, isect& i, vector<const SceneObject*>& stack )
+{
 	if( depth>=0 && scene->intersect( r, i ) ) {
 		// YOUR CODE HERE
 
@@ -55,21 +57,64 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		vec3f position = r.at(i.t);
 		vec3f direction = d - 2 * i.N * d.dot(i.N);
 		ray newray(position, direction);
-		vec3f reflect = m.kr.multiply(traceRay(scene, newray, thresh, depth-1, inside).clamp());
-		color += reflect;
+		if(!m.kr.iszero()) {
+			vec3f reflect = m.kr.multiply(traceRay(scene, newray, thresh, depth-1, stack).clamp());
+			color += reflect;
+		}
 
 		//calculate the refracted ray
 		float ref_ratio;
 		float sin_ang = d.cross(i.N).length();
 		vec3f N = i.N;
-		if(inside) {
-			//Material to air
-			ref_ratio = m.index / 1.0;
-			N = -N;
+		//Decide going in or out
+		const SceneObject *mi = NULL, *mt = NULL;
+		int stack_idx = -1;
+		vector<const SceneObject*>::reverse_iterator itr;
+		//1 use the normal to decide whether to go in or out
+		//0: travel through, 1: in, 2: out
+		char travel = 0;
+		if(i.N.dot(d) <= -RAY_EPSILON) {
+			//from outer surface in
+			//test whether the object has two face
+			ray test_ray(r.at(i.t) + d * 2 * RAY_EPSILON, -d);
+			isect test_i;
+			if(i.obj->intersect(r, test_i) && test_i.N.dot(N) > -RAY_EPSILON) {
+				//has interior
+				travel = 1;
+			}
 		}
 		else {
-			ref_ratio = 1.0 / m.index;
+			travel = 2;
 		}
+
+		if(travel == 1) {
+			if(!stack.empty()) {
+				mi = stack.back();
+			}
+			mt = i.obj;
+			stack.push_back(mt);
+		}
+		else if(travel == 2) {
+			//if it is in our stack, then we must pop it
+			for(itr = stack.rbegin(); itr != stack.rend(); ++itr) {
+				if(*itr == i.obj) {
+					mi = *itr;
+					vector<const SceneObject*>::iterator ii = itr.base() - 1;
+					stack_idx = ii - stack.begin();
+					stack.erase(ii);
+					break;
+				}
+			}
+			if(!stack.empty()) {
+				mt = stack.back();
+			}
+		}
+
+		if(N.dot(d) >= RAY_EPSILON) {
+			N = -N;
+		}
+		
+		ref_ratio = (mi?(mi->getMaterial().index):1.0) / (mt?(mt->getMaterial().index):1.0);
 
 		if(!m.kt.iszero() && (ref_ratio < 1.0 + RAY_EPSILON || sin_ang < 1.0 / ref_ratio + RAY_EPSILON)) {
 			//No total internal reflection
@@ -77,8 +122,17 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 			float c = N.dot(-d);
 			direction = (ref_ratio * c - sqrtf(1 - ref_ratio * ref_ratio * (1 - c * c))) * N + ref_ratio * d;
 			newray = ray(position, direction);
-			vec3f refraction = m.kt.multiply(traceRay(scene, newray, thresh, depth-1, !inside).clamp());
+			vec3f refraction = m.kt.multiply(traceRay(scene, newray, thresh, depth-1, stack).clamp());
 			color += refraction;
+		}
+
+		if(travel == 1) {
+			stack.pop_back();
+		}
+		else if(travel == 2) {
+			if(mi) {
+				stack.insert(stack.begin() + stack_idx, mi);
+			}
 		}
 
 		return color;
@@ -97,6 +151,8 @@ RayTracer::RayTracer()
 	buffer = NULL;
 	buffer_width = buffer_height = 256;
 	scene = NULL;
+	sampleSize = 1;
+	mode = TRACE_NORMAL;
 
 	m_bSceneLoaded = false;
 }
@@ -154,6 +210,10 @@ bool RayTracer::loadScene( char* fn )
 	m_bSceneLoaded = true;
 
 	return true;
+}
+
+void RayTracer::setMode(enum TraceMode m) {
+	mode = m;
 }
 
 void RayTracer::traceSetup( int w, int h, int d, float scale )
