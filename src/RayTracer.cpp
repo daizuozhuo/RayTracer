@@ -150,7 +150,9 @@ bool RayTracer::loadScene( char* fn )
 	scene->initScene();
 	
 	// Add any specialized scene loading code here
-	
+	//add a spot light to scene
+	Light *spot = new SpotLight(scene, vec3f(0, 0, 0), vec3f(1.0, 1.0, 1.0), vec3f(0.1, 0.1, 0.1), vec3f(1.0,1.0,1.0)); 
+	scene->add(spot);
 	m_bSceneLoaded = true;
 
 	return true;

@@ -6,3 +6,5 @@ RayTracer
 - [x] Shadow Attenuation
 - [x] refraction
 - [x] distance scaling
+- [x] spot light
+- [ ] warn mode

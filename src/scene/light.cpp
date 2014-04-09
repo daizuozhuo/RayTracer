@@ -72,6 +72,14 @@ vec3f PointLight::shadowAttenuation(const vec3f& P) const
 	return col;
 }
 
+vec3f SpotLight::getColor(const vec3f& P) const
+{
+	//Splot light color depend on p
+	vec3f L = direction ;
+	vec3f tL=getDirection(P);
+	return color * pow(L.dot(tL), 16);
+}
+
 double AmbientLight::distanceAttenuation( const vec3f& P ) const
 {
 	// Never Used

@@ -50,6 +50,19 @@ protected:
 	vec3f atten_coeff;
 };
 
+class SpotLight 
+	: public PointLight
+{
+public:
+	SpotLight( Scene *scene, const vec3f& pos, const vec3f& color, const vec3f& coeff, const vec3f& direct )
+		:PointLight(scene, pos, color, coeff ), direction(direct.normalize()) {}
+	virtual vec3f getColor(const vec3f& P) const;
+protected:
+	vec3f position;
+	vec3f direction;
+	vec3f atten_coeff;
+};
+
 class AmbientLight
 	: public Light
 {
