@@ -288,7 +288,7 @@ TraceUI::TraceUI() {
 	m_bRayVisual = false;
 	m_nSpotP = 128;
 	m_fCutoff = 0.2;
-	m_mainWindow = new Fl_Window(100, 40, 380, 230, "Ray <Not Loaded>");
+	m_mainWindow = new Fl_Window(100, 40, 380, 240, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
 		// install menu bar
 		m_menubar = new Fl_Menu_Bar(0, 0, 380, 25);
