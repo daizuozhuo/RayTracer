@@ -49,6 +49,8 @@ public:
 	void setSampleSize(int size);
 	void setDisp(bool visual);
 
+	void setSpotP(int p);
+	void setCutoff(float c);
 	bool sceneLoaded();
 
 private:

@@ -33,6 +33,8 @@ public:
 	Fl_Slider*			m_sizeSlider;
 	Fl_Slider*			m_depthSlider;
 	Fl_Slider*			m_disscaleSlider;
+	Fl_Slider*			m_spotpSlider;
+	Fl_Slider*			m_cutoffSlider;
 	Fl_Slider*			m_sampleSlider;
 
 	Fl_Check_Button*	m_rayVisualButton;
@@ -59,7 +61,9 @@ private:
 	int			m_nSize;
 	int			m_nDepth;
 	int			m_nSampleSize;
+	int			m_nSpotP;
 	float		m_fDisScale;
+	float		m_fCutoff;
 	bool		m_bRayVisual;
 
 // static class members
@@ -80,6 +84,8 @@ private:
 	static void cb_sizeSlides(Fl_Widget* o, void* v);
 	static void cb_depthSlides(Fl_Widget* o, void* v);
 	static void cb_disscaleSlides(Fl_Widget* o, void* v);
+	static void cb_spotpSlides(Fl_Widget* o, void* v);
+	static void cb_cutoffSlides(Fl_Widget* o, void* v);
 	static void cb_sampleSizeSlides(Fl_Widget* o, void* v);
 	static void cb_rayVisualCheck(Fl_Widget* o, void* v);
 

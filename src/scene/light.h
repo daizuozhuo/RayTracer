@@ -11,11 +11,14 @@ public:
 	virtual double distanceAttenuation( const vec3f& P ) const = 0;
 	virtual vec3f getColor( const vec3f& P ) const = 0;
 	virtual vec3f getDirection( const vec3f& P ) const = 0;
+	static void setSpotP(int p) { spotP = p; }
+	static void setCutoff(double cut) { cutoff = cut; }
 
 protected:
 	Light( Scene *scene, const vec3f& col )
 		: SceneElement( scene ), color( col ) {}
-
+	static int spotP;
+	static float cutoff;
 	vec3f 		color;
 };
 
