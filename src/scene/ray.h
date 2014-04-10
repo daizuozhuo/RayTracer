@@ -39,6 +39,12 @@ protected:
 
 // The description of an intersection point.
 
+enum INTERSECT_SURFACE {
+	ISECT_TRAVEL = 0,
+	ISECT_IN,
+	ISECT_OUT
+};
+
 class isect
 {
 public:
@@ -103,8 +109,8 @@ public:
                                 // as in the case where the material was interpolated
 
     const Material &getMaterial() const;
-	bool isIn;
     // Other info here.
+	enum INTERSECT_SURFACE state;
 };
 
 const double RAY_EPSILON = 0.00001;

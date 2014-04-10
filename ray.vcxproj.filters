@@ -175,4 +175,182 @@
     <None Include="Makefile" />
     <None Include="README.md" />
   </ItemGroup>
+=======
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9b513d35-5888-42b6-bb95-776e1be4638e}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Source Files\ui">
+      <UniqueIdentifier>{5e99a662-6c64-49c1-ae90-b2a0f8847ad3}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Source Files\fileio">
+      <UniqueIdentifier>{f35a45fa-9701-42b5-86a1-791250f37e7b}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Source Files\vecmath">
+      <UniqueIdentifier>{176c6071-e2b9-4d7d-a1a2-eed3863fe5a3}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Source Files\scene">
+      <UniqueIdentifier>{f01239c1-81f0-44f7-96e3-7a8ac4fb4563}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Source Files\SceneObjects">
+      <UniqueIdentifier>{1086b07e-a23c-417b-92f3-964d2e839695}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{c87433bb-36e2-423c-81d5-4bc1182d8f85}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Header Files\ui.">
+      <UniqueIdentifier>{f08f2931-2b11-4c21-b525-f4f33b077e0d}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Header Files\fileio.">
+      <UniqueIdentifier>{b4e58a25-7b37-4928-b86e-1611878b394e}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Header Files\vecmath.">
+      <UniqueIdentifier>{375c1d40-3d99-4278-9def-3d0ffa096754}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Header Files\scene.">
+      <UniqueIdentifier>{ba609061-b089-4533-bf37-92af25cec2fe}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Header Files\SceneObjects.">
+      <UniqueIdentifier>{bbfab6e8-be0b-4edc-a696-b0d9a31ec691}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{b6a54517-f1a1-4515-8e5d-060c91ca4524}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\getopt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RayTracer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\TraceGLWindow.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\TraceUI.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fileio\bitmap.cpp">
+      <Filter>Source Files\fileio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fileio\parse.cpp">
+      <Filter>Source Files\fileio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fileio\read.cpp">
+      <Filter>Source Files\fileio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vecmath\vecmath.cpp">
+      <Filter>Source Files\vecmath</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\camera.cpp">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\light.cpp">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\material.cpp">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\ray.cpp">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\scene.cpp">
+      <Filter>Source Files\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneObjects\Box.cpp">
+      <Filter>Source Files\SceneObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneObjects\Cone.cpp">
+      <Filter>Source Files\SceneObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneObjects\Cylinder.cpp">
+      <Filter>Source Files\SceneObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneObjects\Sphere.cpp">
+      <Filter>Source Files\SceneObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneObjects\Square.cpp">
+      <Filter>Source Files\SceneObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneObjects\trimesh.cpp">
+      <Filter>Source Files\SceneObjects</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\RayTracer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\TraceGLWindow.h">
+      <Filter>Header Files\ui.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\TraceUI.h">
+      <Filter>Header Files\ui.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fileio\bitmap.h">
+      <Filter>Header Files\fileio.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fileio\parse.h">
+      <Filter>Header Files\fileio.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fileio\read.h">
+      <Filter>Header Files\fileio.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vecmath\vecmath.h">
+      <Filter>Header Files\vecmath.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\camera.h">
+      <Filter>Header Files\scene.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\light.h">
+      <Filter>Header Files\scene.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\material.h">
+      <Filter>Header Files\scene.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\ray.h">
+      <Filter>Header Files\scene.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\scene.h">
+      <Filter>Header Files\scene.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneObjects\Box.h">
+      <Filter>Header Files\SceneObjects.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneObjects\Cone.h">
+      <Filter>Header Files\SceneObjects.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneObjects\Cylinder.h">
+      <Filter>Header Files\SceneObjects.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneObjects\Sphere.h">
+      <Filter>Header Files\SceneObjects.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneObjects\Square.h">
+      <Filter>Header Files\SceneObjects.</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneObjects\trimesh.h">
+      <Filter>Header Files\SceneObjects.</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+    <None Include="README.md" />
+  </ItemGroup>
 </Project>

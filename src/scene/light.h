@@ -54,13 +54,13 @@ class SpotLight
 	: public PointLight
 {
 public:
-	SpotLight( Scene *scene, const vec3f& pos, const vec3f& color, const vec3f& coeff, const vec3f& direct )
-		:PointLight(scene, pos, color, coeff ), direction(direct.normalize()) {}
-	virtual vec3f getColor(const vec3f& P) const;
+	SpotLight( Scene *scene, const vec3f& pos, const vec3f& color, const vec3f& coeff, const vec3f& direct, float cutoff, float shine )
+		:PointLight(scene, pos, color, coeff ), direction(direct.normalize()), cutoff_ang(cosf(cutoff)), shiness(shine) {}
+	virtual vec3f shadowAttenuation(const vec3f& P) const;
 protected:
-	vec3f position;
 	vec3f direction;
-	vec3f atten_coeff;
+	float cutoff_ang;
+	float shiness;
 };
 
 class AmbientLight

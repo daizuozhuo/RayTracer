@@ -5,6 +5,17 @@
 
 #include "scene/scene.h"
 #include "scene/ray.h"
+#include <vector>
+
+using std::vector;
+
+enum TraceMode {
+	TRACE_NORMAL = 0,
+	TRACE_ANTIALIAS_NORMAL,
+	TRACE_JITTER,
+	TRACE_ADAPTIVE_ANTIALIAS,
+	NUM_TRACE_MODE
+};
 
 class RayTracer
 {
@@ -13,8 +24,9 @@ public:
     ~RayTracer();
 
     vec3f trace( Scene *scene, double x, double y );
-	vec3f traceRay( Scene *scene, const ray& r, const vec3f& thresh, int depth, bool inside = false );
-
+    vec3f trace( Scene *scene, double x, double y, isect& i );
+	vec3f traceRay( Scene *scene, const ray& r, const vec3f& thresh, int depth, vector<const SceneObject*>& stack );
+	vec3f traceRay( Scene *scene, const ray& r, const vec3f& thresh, int depth, isect& i, vector<const SceneObject*>& stack );
 
 	void getBuffer( unsigned char *&buf, int &w, int &h );
 	double aspectRatio();
@@ -23,6 +35,9 @@ public:
 	void tracePixel( int i, int j );
 
 	bool loadScene( char* fn );
+
+	void setMode(enum TraceMode m);
+	void setSampleSize(int size);
 
 	bool sceneLoaded();
 
@@ -33,6 +48,8 @@ private:
 	int depth;
 	float dis_scale;
 	Scene *scene;
+	enum TraceMode mode;
+	int sampleSize;
 
 	bool m_bSceneLoaded;
 };

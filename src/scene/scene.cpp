@@ -231,6 +231,7 @@ void Scene::initScene()
 		else
 			nonboundedobjects.push_back(*j);
 	}
+	ambient_light = new AmbientLight(this, vec3f(1.0, 1.0, 1.0));
 }
 
 void Scene::set(AmbientLight* light)
