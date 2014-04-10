@@ -32,7 +32,7 @@ public:
 
 	void getBuffer( unsigned char *&buf, int &w, int &h );
 	double aspectRatio();
-	void traceSetup( int w, int h, int d, float scale);
+	void traceSetup( int w, int h, int d, float scale, float tr);
 	void traceLines( int start = 0, int stop = 10000000 );
 	void tracePixel( int i, int j );
 
@@ -63,6 +63,8 @@ private:
 	enum TraceMode mode;
 	int sampleSize;
 	bool ray_visual;
+
+	float threshold;
 
 	bool m_bSceneLoaded;
 

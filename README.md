@@ -11,4 +11,4 @@ RayTracer
 - [x] Anti-alias
 - [ ] BSP accelerate
 - [ ] shadow att accerlerate
-- [ ] adaptive termination
+- [x] adaptive termination

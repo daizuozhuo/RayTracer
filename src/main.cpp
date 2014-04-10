@@ -166,7 +166,7 @@ int main(int argc, char **argv) {
 		if (theRayTracer->sceneLoaded()) {
 			g_height = (int)(g_width / theRayTracer->aspectRatio() + 0.5);
 
-			theRayTracer->traceSetup(g_width, g_height, 2, 1.0);
+			theRayTracer->traceSetup(g_width, g_height, 2, 1.0, 0.0001);
 		
 			clock_t start, end;
 			start=clock();

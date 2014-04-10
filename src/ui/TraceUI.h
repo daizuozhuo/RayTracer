@@ -36,6 +36,7 @@ public:
 	Fl_Slider*			m_spotpSlider;
 	Fl_Slider*			m_cutoffSlider;
 	Fl_Slider*			m_sampleSlider;
+	Fl_Slider*			m_threshSlider;
 
 	Fl_Check_Button*	m_rayVisualButton;
 
@@ -52,6 +53,7 @@ public:
 	int			getSize();
 	int			getDepth();
 	float		getDistScale();
+	float		getThresh();
 	int			getSampleSize();
 	bool		getRayVisual();
 
@@ -64,6 +66,7 @@ private:
 	int			m_nSpotP;
 	float		m_fDisScale;
 	float		m_fCutoff;
+	float		m_fThresh;
 	bool		m_bRayVisual;
 
 // static class members
@@ -87,6 +90,8 @@ private:
 	static void cb_spotpSlides(Fl_Widget* o, void* v);
 	static void cb_cutoffSlides(Fl_Widget* o, void* v);
 	static void cb_sampleSizeSlides(Fl_Widget* o, void* v);
+	static void cb_threshSlides(Fl_Widget* o, void *v);
+
 	static void cb_rayVisualCheck(Fl_Widget* o, void* v);
 
 	static void cb_render(Fl_Widget* o, void* v);

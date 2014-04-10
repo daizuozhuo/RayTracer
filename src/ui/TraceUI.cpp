@@ -102,6 +102,11 @@ void TraceUI::cb_sampleSizeSlides(Fl_Widget* o, void* v)
 	((TraceUI*)(o->user_data()))->m_nSampleSize=int( ((Fl_Slider *)o)->value() ) ;
 }
 
+void TraceUI::cb_threshSlides(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_fThresh=float( ((Fl_Slider *)o)->value() ) ;
+}
+
 void TraceUI::cb_spotpSlides(Fl_Widget* o, void* v)
 {
 	TraceUI* pUI=((TraceUI *)(o->user_data()));
@@ -149,7 +154,7 @@ void TraceUI::cb_render(Fl_Widget* o, void* v)
 
 		pUI->m_traceGlWindow->show();
 
-		pUI->raytracer->traceSetup(width, height, pUI->getDepth(), pUI->getDistScale());
+		pUI->raytracer->traceSetup(width, height, pUI->getDepth(), pUI->getDistScale(), pUI->getThresh());
 		pUI->raytracer->setSampleSize(pUI->getSampleSize());
 		pUI->raytracer->setDisp(pUI->getRayVisual());
 		
@@ -256,6 +261,11 @@ bool TraceUI::getRayVisual()
 	return m_bRayVisual;
 }
 
+float TraceUI::getThresh()
+{
+	return m_fThresh;
+}
+
 // menu definition
 Fl_Menu_Item TraceUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
@@ -288,7 +298,8 @@ TraceUI::TraceUI() {
 	m_bRayVisual = false;
 	m_nSpotP = 128;
 	m_fCutoff = 0.2;
-	m_mainWindow = new Fl_Window(100, 40, 380, 240, "Ray <Not Loaded>");
+	m_fThresh = 0.00001;
+	m_mainWindow = new Fl_Window(100, 40, 380, 265, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
 		// install menu bar
 		m_menubar = new Fl_Menu_Bar(0, 0, 380, 25);
@@ -380,8 +391,20 @@ TraceUI::TraceUI() {
 		m_sampleSlider->callback(cb_sampleSizeSlides);
 		m_sampleSlider->deactivate();
 
+		m_threshSlider = new Fl_Value_Slider(10, 205, 180, 20, "Threshold");
+		m_threshSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_threshSlider->type(FL_HOR_NICE_SLIDER);
+        m_threshSlider->labelfont(FL_COURIER);
+        m_threshSlider->labelsize(12);
+		m_threshSlider->minimum(0.00001);
+		m_threshSlider->maximum(0.001);
+		m_threshSlider->step(0.00001);
+		m_threshSlider->value(m_fThresh);
+		m_threshSlider->align(FL_ALIGN_RIGHT);
+		m_threshSlider->callback(cb_threshSlides);
+
 		// install ray visualize button
-		m_rayVisualButton = new Fl_Check_Button(10, 205, 180, 20, "Ray Number Visualize");
+		m_rayVisualButton = new Fl_Check_Button(10, 230, 180, 20, "Ray Number Visualize");
 		m_rayVisualButton->user_data((void*)(this));
 		m_rayVisualButton->labelfont(FL_COURIER);
 		m_rayVisualButton->value(0);

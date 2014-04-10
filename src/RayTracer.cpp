@@ -42,7 +42,9 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 vec3f RayTracer::traceRay( Scene *scene, const ray& r, 
 	const vec3f& thresh, int depth, isect& i, vector<const SceneObject*>& stack )
 {
-	if( depth>=0 && scene->intersect( r, i ) ) {
+	if( depth>=0
+		&& thresh[0] > threshold - RAY_EPSILON && thresh[1] > threshold - RAY_EPSILON && thresh[2] > threshold - RAY_EPSILON
+		&& scene->intersect( r, i ) ) {
 		// YOUR CODE HERE
 
 		// An intersection occured!  We've got work to do.  For now,
@@ -62,7 +64,7 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		vec3f direction = d - 2 * i.N * d.dot(i.N);
 		ray newray(position, direction);
 		if(!m.kr.iszero()) {
-			vec3f reflect = m.kr.multiply(traceRay(scene, newray, thresh, depth-1, stack).clamp());
+			vec3f reflect = m.kr.multiply(traceRay(scene, newray, thresh.multiply(m.kr), depth-1, stack).clamp());
 			color += reflect;
 		}
 
@@ -126,7 +128,7 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 			double c = N.dot(-d);
 			direction = (ref_ratio * c - sqrt(1 - ref_ratio * ref_ratio * (1 - c * c))) * N + ref_ratio * d;
 			newray = ray(position, direction);
-			vec3f refraction = m.kt.multiply(traceRay(scene, newray, thresh, depth-1, stack).clamp());
+			vec3f refraction = m.kt.multiply(traceRay(scene, newray, thresh.multiply(m.kt), depth-1, stack).clamp());
 			color += refraction;
 		}
 
@@ -229,7 +231,7 @@ void RayTracer::setDisp(bool visual) {
 	ray_visual = visual;
 }
 
-void RayTracer::traceSetup( int w, int h, int d, float scale )
+void RayTracer::traceSetup( int w, int h, int d, float scale, float thresh )
 {
 	if( buffer_width != w || buffer_height != h )
 	{
@@ -242,6 +244,7 @@ void RayTracer::traceSetup( int w, int h, int d, float scale )
 	}
 	memset( buffer, 0, w*h*3 );
 	depth = d;
+	threshold = thresh;
 	if(scene) {
 		scene->setScale(scale);
 	}
