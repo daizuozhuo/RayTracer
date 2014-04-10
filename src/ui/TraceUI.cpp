@@ -102,6 +102,11 @@ void TraceUI::cb_sampleSizeSlides(Fl_Widget* o, void* v)
 	((TraceUI*)(o->user_data()))->m_nSampleSize=int( ((Fl_Slider *)o)->value() ) ;
 }
 
+void TraceUI::cb_rayVisualCheck(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_bRayVisual=bool( ((Fl_Check_Button *)o)->value() ) ;
+}
+
 void TraceUI::cb_modeChoice(Fl_Widget* o, void* v)
 {
 	TraceUI* pUI=((TraceUI *)(o->user_data()));
@@ -131,6 +136,8 @@ void TraceUI::cb_render(Fl_Widget* o, void* v)
 		pUI->m_traceGlWindow->show();
 
 		pUI->raytracer->traceSetup(width, height, pUI->getDepth(), pUI->getDistScale());
+		pUI->raytracer->setSampleSize(pUI->getSampleSize());
+		pUI->raytracer->setDisp(pUI->getRayVisual());
 		
 		// Save the window label
 		const char *old_label = pUI->m_traceGlWindow->label();
@@ -225,6 +232,16 @@ float TraceUI::getDistScale()
 	return m_fDisScale;
 }
 
+int TraceUI::getSampleSize()
+{
+	return m_nSampleSize;
+}
+
+bool TraceUI::getRayVisual()
+{
+	return m_bRayVisual;
+}
+
 // menu definition
 Fl_Menu_Item TraceUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
@@ -254,7 +271,8 @@ TraceUI::TraceUI() {
 	m_nSize = 150;
 	m_nSampleSize = 1;
 	m_fDisScale = 1.87;
-	m_mainWindow = new Fl_Window(100, 40, 380, 170, "Ray <Not Loaded>");
+	m_bRayVisual = false;
+	m_mainWindow = new Fl_Window(100, 40, 380, 195, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
 		// install menu bar
 		m_menubar = new Fl_Menu_Bar(0, 0, 380, 25);
@@ -263,6 +281,7 @@ TraceUI::TraceUI() {
 		// install mode chooser
 		m_modeChooser = new Fl_Choice(10, 30, 180, 20, "Trace Mode");
 		m_modeChooser->user_data((void*)(this));
+        m_modeChooser->labelfont(FL_COURIER);
 		m_modeChooser->menu(traceModeMenu);
 		m_modeChooser->align(FL_ALIGN_RIGHT);
 		m_modeChooser->callback(cb_modeChoice);
@@ -319,6 +338,13 @@ TraceUI::TraceUI() {
 		m_sampleSlider->align(FL_ALIGN_RIGHT);
 		m_sampleSlider->callback(cb_sampleSizeSlides);
 		m_sampleSlider->deactivate();
+
+		// install ray visualize button
+		m_rayVisualButton = new Fl_Check_Button(10, 155, 180, 20, "Ray Number Visualize");
+		m_rayVisualButton->user_data((void*)(this));
+		m_rayVisualButton->labelfont(FL_COURIER);
+		m_rayVisualButton->value(0);
+		m_rayVisualButton->callback(cb_rayVisualCheck);
 
 		m_renderButton = new Fl_Button(280, 52, 70, 25, "&Render");
 		m_renderButton->user_data((void*)(this));

@@ -8,3 +8,7 @@ RayTracer
 - [x] distance scaling
 - [x] refining spot light
 - [ ] warn mode
+- [x] Anti-alias
+- [ ] BSP accelerate
+- [ ] shadow att accerlerate
+- [ ] adaptive termination

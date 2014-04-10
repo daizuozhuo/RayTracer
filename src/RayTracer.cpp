@@ -24,6 +24,7 @@ vec3f RayTracer::trace( Scene *scene, double x, double y, isect& i )
     scene->getCamera()->rayThrough( x,y,r );
 	//Judge if the starting point is in the air or in an object
 	vector<const SceneObject*> stack;
+	n_ray += vec3f(0.02, 0.02, 0.02);
 	return traceRay( scene, r, vec3f(1.0,1.0,1.0), depth, i, stack).clamp();
 }
 
@@ -63,8 +64,8 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		}
 
 		//calculate the refracted ray
-		float ref_ratio;
-		float sin_ang = d.cross(i.N).length();
+		double ref_ratio;
+		double sin_ang = d.cross(i.N).length();
 		vec3f N = i.N;
 		//Decide going in or out
 		const SceneObject *mi = NULL, *mt = NULL;
@@ -119,8 +120,8 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		if(!m.kt.iszero() && (ref_ratio < 1.0 + RAY_EPSILON || sin_ang < 1.0 / ref_ratio + RAY_EPSILON)) {
 			//No total internal reflection
 			//We do refraction now
-			float c = N.dot(-d);
-			direction = (ref_ratio * c - sqrtf(1 - ref_ratio * ref_ratio * (1 - c * c))) * N + ref_ratio * d;
+			double c = N.dot(-d);
+			direction = (ref_ratio * c - sqrt(1 - ref_ratio * ref_ratio * (1 - c * c))) * N + ref_ratio * d;
 			newray = ray(position, direction);
 			vec3f refraction = m.kt.multiply(traceRay(scene, newray, thresh, depth-1, stack).clamp());
 			color += refraction;
@@ -153,6 +154,7 @@ RayTracer::RayTracer()
 	scene = NULL;
 	sampleSize = 1;
 	mode = TRACE_NORMAL;
+	ray_visual = false;
 
 	m_bSceneLoaded = false;
 }
@@ -216,6 +218,14 @@ void RayTracer::setMode(enum TraceMode m) {
 	mode = m;
 }
 
+void RayTracer::setSampleSize(int size) {
+	sampleSize = size;
+}
+
+void RayTracer::setDisp(bool visual) {
+	ray_visual = visual;
+}
+
 void RayTracer::traceSetup( int w, int h, int d, float scale )
 {
 	if( buffer_width != w || buffer_height != h )
@@ -252,17 +262,99 @@ void RayTracer::tracePixel( int i, int j )
 {
 	vec3f col;
 
+	n_ray = vec3f(0.0, 0.0, 0.0);
+
 	if( !scene )
 		return;
 
-	double x = double(i)/double(buffer_width);
-	double y = double(j)/double(buffer_height);
+	if(mode == TRACE_NORMAL || ( (mode == TRACE_ANTIALIAS_NORMAL || mode == TRACE_ADAPTIVE_ANTIALIAS) && sampleSize == 1)) {
 
-	col = trace( scene,x,y );
+		double x = (double(i) + 0.5)/double(buffer_width);
+		double y = (double(j) + 0.5)/double(buffer_height);
+
+		col = trace( scene,x,y );
+	}
+	else if(mode == TRACE_ANTIALIAS_NORMAL) {
+		col = vec3f(0.0, 0.0, 0.0);
+		double interval = 1.0 / double(sampleSize - 1);
+		int m, n;
+		for(m = 0; m < sampleSize; m++) {
+			for(n = 0; n < sampleSize; n++) {
+				double x = (double(i) + m * interval)/double(buffer_width);
+				double y = (double(j) + n * interval)/double(buffer_height);
+				col += trace( scene, x, y);
+			}
+		}
+		col /= 1.0 * sampleSize * sampleSize;
+	}
+	else if(mode == TRACE_ADAPTIVE_ANTIALIAS) {
+		double x = double(i)/double(buffer_width);
+		double y = double(j)/double(buffer_height);
+		vec3f lb, rb, lt, rt;
+		isect lb_i, rb_i, lt_i, rt_i;
+		lb = trace(scene, x, y, lb_i);
+		rb = trace(scene, x + 1.0/double(buffer_width), y, rb_i);
+		rt = trace(scene, x + 1.0/double(buffer_width), y + 1.0/double(buffer_height), rt_i);
+		lt = trace(scene, x, y + 1.0/double(buffer_height), lt_i);
+		col = adaptiveSample(x, y, 1.0/double(buffer_width), 1.0/double(buffer_width), sampleSize,
+							lb, lb_i, rb, rb_i, rt, rt_i, lt, lt_i);
+	}
+	else if(mode == TRACE_JITTER) {
+		col = vec3f(0.0, 0.0, 0.0);
+		int m = sampleSize * sampleSize;
+		for(int n = 0; n < m; n++) {
+			double x = (double(i) + 1.0 * rand() / RAND_MAX) / double(buffer_width);
+			double y = (double(j) + 1.0 * rand() / RAND_MAX) / double(buffer_height);
+			col += trace( scene, x, y);
+		}
+		col /= 1.0 * m;
+	}
 
 	unsigned char *pixel = buffer + ( i + j * buffer_width ) * 3;
+
+	if(ray_visual) {
+		col = n_ray.clamp();
+	}
 
 	pixel[0] = (int)( 255.0 * col[0]);
 	pixel[1] = (int)( 255.0 * col[1]);
 	pixel[2] = (int)( 255.0 * col[2]);
+}
+
+vec3f RayTracer::adaptiveSample( double x, double y, double w, double h, int depth, 
+							vec3f& LB_col, isect& LB, vec3f& RB_col, isect& RB,
+							vec3f& RT_col, isect& RT, vec3f& LT_col, isect& LT)
+{
+	if(depth <= 0) {
+		return (LB_col + RB_col + RT_col + LT_col) / 4;
+	}
+	if(LB.obj == RB.obj && RB.obj == RT.obj && RT.obj == LT.obj
+		&& DeltaChange(LB_col, RB_col, RT_col, LT_col)) {
+			return (LB_col + RB_col + RT_col + LT_col) / 4;
+	}
+	else {
+		vec3f center, t, b, l, r;
+		isect c_i, t_i, b_i, l_i, r_i;
+		double hw = w / 2;
+		double hh = h / 2;
+		center = trace(scene, x + hw, y + hh, c_i);
+		b = trace(scene, x + hw, y, b_i);
+		t = trace(scene, x + hw, y + h, t_i);
+		l = trace(scene, x, y + hh, l_i);
+		r = trace(scene, x + w, y + hh, r_i);
+
+		return (adaptiveSample(x, y, hw, hh, depth - 1, LB_col, LB, b, b_i, center, c_i, l, l_i)
+				+ adaptiveSample(x + hw, y, hw, hh, depth - 1, b, b_i, RB_col, RB, r, r_i, center, c_i)
+				+ adaptiveSample(x, y + hh, hw, hh, depth - 1, l, l_i, center, c_i, t, t_i, LT_col, LT)
+				+ adaptiveSample(x + hw, y + hh, hw, hh, depth - 1, center, c_i, r, r_i, RT_col, RT, t, t_i)
+				) / 4;
+	}
+}
+
+bool RayTracer::DeltaChange(vec3f a, vec3f b, vec3f c, vec3f d) {
+	return DeltaChange(a, b) && DeltaChange(b, c) && DeltaChange(c, d) && DeltaChange(a, c) && DeltaChange(b, d);
+}
+
+bool RayTracer::DeltaChange(vec3f a, vec3f b) {
+	return (abs(a[0] - b[0]) < SAMPLE_DELTA) && (abs(a[1] - b[1]) < SAMPLE_DELTA) && (abs(a[2] - b[2]) < SAMPLE_DELTA);
 }

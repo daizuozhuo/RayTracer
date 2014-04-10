@@ -574,7 +574,7 @@ static void processObject( Obj *obj, Scene *scene, mmap& materials )
 			atten_coeff[0] = getField( child, "quadratic_attenuation_coeff" )->getScalar();
 		}
 
-		float shine = 0.1;
+		double shine = 0.1;
 
 		if(hasField(child, "shininess")) {
 			shine = getField(child, "shininess")->getScalar();

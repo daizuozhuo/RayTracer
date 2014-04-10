@@ -264,7 +264,7 @@ public:
 	void add( Light* light )
 	{ lights.push_back( light ); }
 	void set( AmbientLight* light );
-	void setScale( float dis_scale ) {
+	void setScale( double dis_scale ) {
 		scale = dis_scale;
 	}
 
@@ -278,7 +278,7 @@ public:
 	const AmbientLight* getAmbientLight() const { return ambient_light; }
         
 	Camera *getCamera() { return &camera; }
-	float getScale() { return scale; }
+	double getScale() { return scale; }
 	
 
 private:
@@ -289,7 +289,7 @@ private:
     AmbientLight* ambient_light;
     Camera camera;
 
-	float scale;
+	double scale;
 	
 	// Each object in the scene, provided that it has hasBoundingBoxCapability(),
 	// must fall within this bounding box.  Objects that don't have hasBoundingBoxCapability()

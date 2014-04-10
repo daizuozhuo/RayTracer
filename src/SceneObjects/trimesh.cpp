@@ -67,7 +67,7 @@ bool TrimeshFace::intersectLocal( const ray& r, isect& i ) const
     const vec3f& c = parent->vertices[ids[2]];
     
     vec3f bary;
-    float t;
+    double t;
     vec3f n;
     
     vec3f p = r.getPosition();
@@ -99,7 +99,7 @@ bool TrimeshFace::intersectLocal( const ray& r, isect& i ) const
     int k = -1;
     for( int j = 0; j < 3; ++j )
     {
-        float val = n[j];
+        double val = n[j];
         if( val < 0 )
             val *= -1;
         if( val > greatestMag )

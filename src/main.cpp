@@ -151,6 +151,7 @@ bool processArgs(int argc, char **argv) {
 // event handling overhead.
 int main(int argc, char **argv) {
 	progname=argv[0];
+	srand((unsigned)time(NULL));
 
 	if (argc!=1) {
 		// text mode

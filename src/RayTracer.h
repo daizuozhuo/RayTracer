@@ -17,6 +17,8 @@ enum TraceMode {
 	NUM_TRACE_MODE
 };
 
+#define SAMPLE_DELTA	0.01f
+
 class RayTracer
 {
 public:
@@ -34,10 +36,18 @@ public:
 	void traceLines( int start = 0, int stop = 10000000 );
 	void tracePixel( int i, int j );
 
+	vec3f adaptiveSample( double x, double y, double w, double h, int depth, 
+							vec3f& LB_col, isect& LB, vec3f& RB_col, isect& RB,
+							vec3f& RT_col, isect& RT, vec3f& LT_col, isect& LT);
+
+	bool DeltaChange(vec3f a, vec3f b, vec3f c, vec3f d);
+	bool DeltaChange(vec3f a, vec3f b);
+
 	bool loadScene( char* fn );
 
 	void setMode(enum TraceMode m);
 	void setSampleSize(int size);
+	void setDisp(bool visual);
 
 	bool sceneLoaded();
 
@@ -50,8 +60,11 @@ private:
 	Scene *scene;
 	enum TraceMode mode;
 	int sampleSize;
+	bool ray_visual;
 
 	bool m_bSceneLoaded;
+
+	vec3f n_ray;
 };
 
 #endif // __RAYTRACER_H__
