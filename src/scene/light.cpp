@@ -1,6 +1,8 @@
 #include <cmath>
 
 #include "light.h"
+int Light::spotP=128;
+float Light::cutoff=0.2;
 
 double DirectionalLight::distanceAttenuation( const vec3f& P ) const
 {
@@ -75,10 +77,10 @@ vec3f PointLight::shadowAttenuation(const vec3f& P) const
 vec3f SpotLight::shadowAttenuation(const vec3f& P) const
 {
 	float L = direction.dot(-getDirection(P));
-	if(L <= cutoff_ang - RAY_EPSILON) {
+	if(L <= cosf(cutoff) - RAY_EPSILON) {
 		return vec3f(0, 0, 0);
 	}
-	return PointLight::shadowAttenuation(P) * pow(L, shiness * 128);
+	return PointLight::shadowAttenuation(P) * pow(L, shiness * spotP);
 }
 
 double AmbientLight::distanceAttenuation( const vec3f& P ) const

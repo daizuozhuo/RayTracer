@@ -102,6 +102,20 @@ void TraceUI::cb_sampleSizeSlides(Fl_Widget* o, void* v)
 	((TraceUI*)(o->user_data()))->m_nSampleSize=int( ((Fl_Slider *)o)->value() ) ;
 }
 
+void TraceUI::cb_spotpSlides(Fl_Widget* o, void* v)
+{
+	TraceUI* pUI=((TraceUI *)(o->user_data()));
+	pUI->m_nSpotP=int( ((Fl_Slider *)o)->value() ) ;
+	pUI->raytracer->setSpotP(pUI->m_nSpotP);
+}
+
+void TraceUI::cb_cutoffSlides(Fl_Widget* o, void* v)
+{
+	TraceUI* pUI=((TraceUI *)(o->user_data()));
+	pUI->m_fCutoff=float( ((Fl_Slider *)o)->value() ) ;
+	pUI->raytracer->setCutoff(pUI->m_fCutoff);
+}
+
 void TraceUI::cb_modeChoice(Fl_Widget* o, void* v)
 {
 	TraceUI* pUI=((TraceUI *)(o->user_data()));
@@ -254,7 +268,9 @@ TraceUI::TraceUI() {
 	m_nSize = 150;
 	m_nSampleSize = 1;
 	m_fDisScale = 1.87;
-	m_mainWindow = new Fl_Window(100, 40, 380, 170, "Ray <Not Loaded>");
+	m_nSpotP = 128;
+	m_fCutoff = 0.2;
+	m_mainWindow = new Fl_Window(100, 40, 380, 200, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
 		// install menu bar
 		m_menubar = new Fl_Menu_Bar(0, 0, 380, 25);
@@ -306,8 +322,33 @@ TraceUI::TraceUI() {
 		m_disscaleSlider->align(FL_ALIGN_RIGHT);
 		m_disscaleSlider->callback(cb_disscaleSlides);
 
-		// install slider sample size
-		m_sampleSlider = new Fl_Value_Slider(10, 130, 180, 20, "Sample Size");
+		// install slider potlight p
+		m_spotpSlider = new Fl_Value_Slider(10, 130, 180, 20, "spot light p");
+		m_spotpSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_spotpSlider->type(FL_HOR_NICE_SLIDER);
+        m_spotpSlider->labelfont(FL_COURIER);
+        m_spotpSlider->labelsize(12);
+		m_spotpSlider->minimum(16);
+		m_spotpSlider->maximum(512);
+		m_spotpSlider->step(10);
+		m_spotpSlider->value(m_nSpotP);
+		m_spotpSlider->align(FL_ALIGN_RIGHT);
+		m_spotpSlider->callback(cb_spotpSlides);
+
+		m_cutoffSlider = new Fl_Value_Slider(10, 155, 180, 20, "spot light cutoff");
+		m_cutoffSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_cutoffSlider->type(FL_HOR_NICE_SLIDER);
+        m_cutoffSlider->labelfont(FL_COURIER);
+        m_cutoffSlider->labelsize(12);
+		m_cutoffSlider->minimum(0.1);
+		m_cutoffSlider->maximum(1.0);
+		m_cutoffSlider->step(0.1);
+		m_cutoffSlider->value(m_fCutoff);
+		m_cutoffSlider->align(FL_ALIGN_RIGHT);
+		m_cutoffSlider->callback(cb_cutoffSlides);
+		
+		// install slider cutoff size
+		m_sampleSlider = new Fl_Value_Slider(10, 180, 180, 20, "Sample Size");
 		m_sampleSlider->user_data((void*)(this));	// record self to be used by static callback functions
 		m_sampleSlider->type(FL_HOR_NICE_SLIDER);
         m_sampleSlider->labelfont(FL_COURIER);

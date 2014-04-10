@@ -27,6 +27,9 @@ vec3f RayTracer::trace( Scene *scene, double x, double y, isect& i )
 	return traceRay( scene, r, vec3f(1.0,1.0,1.0), depth, i, stack).clamp();
 }
 
+void RayTracer::setSpotP(int p) { Light::setSpotP(p); }
+void RayTracer::setCutoff(float c) { Light::setCutoff(c); }
+
 // Do recursive ray tracing!  You'll want to insert a lot of code here
 // (or places called from here) to handle reflection, refraction, etc etc.
 vec3f RayTracer::traceRay( Scene *scene, const ray& r, 

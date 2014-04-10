@@ -38,7 +38,8 @@ public:
 
 	void setMode(enum TraceMode m);
 	void setSampleSize(int size);
-
+	void setSpotP(int p);
+	void setCutoff(float c);
 	bool sceneLoaded();
 
 private:
