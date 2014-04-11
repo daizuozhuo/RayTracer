@@ -14,6 +14,13 @@ public:
 
 	virtual bool intersectLocal( const ray& r, isect& i ) const;
 	virtual bool hasBoundingBoxCapability() const { return true; }
+    virtual BoundingBox ComputeLocalBoundingBox()
+    {
+        BoundingBox localbounds;
+        localbounds.max = vec3f(0.5, 0.5, 0.5);
+		localbounds.min = vec3f(-0.5, -0.5, -0.5);
+        return localbounds;
+    }
     virtual BoundingBox ComputeLocalBoundingBox() const
     {
         BoundingBox localbounds;

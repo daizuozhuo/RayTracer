@@ -253,7 +253,7 @@ public:
 
 public:
 	Scene() 
-		: transformRoot(), objects(), lights(), ambient_light(NULL), scale(1.87) {}
+		: transformRoot(), objects(), lights(), ambient_light(NULL), scale(1.87), BSPAccel(true), bspTree(NULL) {}
 	virtual ~Scene();
 
 	void add( Geometry* obj )
@@ -269,25 +269,30 @@ public:
 	}
 
 	bool intersect( const ray& r, isect& i ) const;
-	bool intersectAll( const ray& r, priority_queue<isect>& i ) const;
 	void initScene();
 
 	list<Light*>::const_iterator beginLights() const { return lights.begin(); }
 	list<Light*>::const_iterator endLights() const { return lights.end(); }
 	
 	const AmbientLight* getAmbientLight() const { return ambient_light; }
+	const BoundingBox getBound() const { return sceneBounds; }
         
 	Camera *getCamera() { return &camera; }
 	double getScale() { return scale; }
-	
 
+	void setBSP(bool s) { BSPAccel = s; }
+	
+	friend class BSPTree;
 private:
     list<Geometry*> objects;
 	list<Geometry*> nonboundedobjects;
 	list<Geometry*> boundedobjects;
     list<Light*> lights;
     AmbientLight* ambient_light;
+	BSPTree* bspTree;
     Camera camera;
+
+	bool BSPAccel;
 
 	double scale;
 	

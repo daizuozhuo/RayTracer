@@ -126,6 +126,11 @@ void TraceUI::cb_rayVisualCheck(Fl_Widget* o, void* v)
 	((TraceUI*)(o->user_data()))->m_bRayVisual=bool( ((Fl_Check_Button *)o)->value() ) ;
 }
 
+void TraceUI::cb_BSPAccelCheck(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_bBSPAccel=bool( ((Fl_Check_Button *)o)->value() ) ;
+}
+
 void TraceUI::cb_modeChoice(Fl_Widget* o, void* v)
 {
 	TraceUI* pUI=((TraceUI *)(o->user_data()));
@@ -157,6 +162,7 @@ void TraceUI::cb_render(Fl_Widget* o, void* v)
 		pUI->raytracer->traceSetup(width, height, pUI->getDepth(), pUI->getDistScale(), pUI->getThresh());
 		pUI->raytracer->setSampleSize(pUI->getSampleSize());
 		pUI->raytracer->setDisp(pUI->getRayVisual());
+		pUI->raytracer->setAccel(pUI->getBSPAccel());
 		
 		// Save the window label
 		const char *old_label = pUI->m_traceGlWindow->label();
@@ -261,6 +267,11 @@ bool TraceUI::getRayVisual()
 	return m_bRayVisual;
 }
 
+bool TraceUI::getBSPAccel()
+{
+	return m_bBSPAccel;
+}
+
 float TraceUI::getThresh()
 {
 	return m_fThresh;
@@ -296,10 +307,11 @@ TraceUI::TraceUI() {
 	m_nSampleSize = 1;
 	m_fDisScale = 1.87;
 	m_bRayVisual = false;
+	m_bBSPAccel = true;
 	m_nSpotP = 128;
 	m_fCutoff = 0.2;
 	m_fThresh = 0.00001;
-	m_mainWindow = new Fl_Window(100, 40, 380, 265, "Ray <Not Loaded>");
+	m_mainWindow = new Fl_Window(100, 40, 380, 290, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
 		// install menu bar
 		m_menubar = new Fl_Menu_Bar(0, 0, 380, 25);
@@ -409,6 +421,13 @@ TraceUI::TraceUI() {
 		m_rayVisualButton->labelfont(FL_COURIER);
 		m_rayVisualButton->value(0);
 		m_rayVisualButton->callback(cb_rayVisualCheck);
+
+		// install bsp accel button
+		m_rayVisualButton = new Fl_Check_Button(10, 255, 180, 20, "BSP Acceleration");
+		m_rayVisualButton->user_data((void*)(this));
+		m_rayVisualButton->labelfont(FL_COURIER);
+		m_rayVisualButton->value(1);
+		m_rayVisualButton->callback(cb_BSPAccelCheck);
 
 		m_renderButton = new Fl_Button(280, 52, 70, 25, "&Render");
 		m_renderButton->user_data((void*)(this));

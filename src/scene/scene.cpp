@@ -2,6 +2,7 @@
 
 #include "scene.h"
 #include "light.h"
+#include "BSPTree.h"
 #include "../ui/TraceUI.h"
 extern TraceUI* traceUI;
 
@@ -68,7 +69,7 @@ bool BoundingBox::intersect(const ray& r, double& tMin, double& tMax) const
 
 		if (tMin > tMax) // box is missed
 			return false;
-		if (tMax < 0.0) // box is behind ray
+		if (tMax < -RAY_EPSILON) // box is behind ray
 			return false;
 	}
 	return true; // it made it past all 3 axes.
@@ -138,36 +139,9 @@ Scene::~Scene()
 	if( ambient_light ) {
 		delete ambient_light;
 	}
-}
-
-// Get any intersection with an object.  Return information about the 
-// intersection through the reference parameter.
-bool Scene::intersectAll( const ray& r, priority_queue<isect>& i ) const {	typedef list<Geometry*>::const_iterator iter;
-	iter j;
-
-	isect cur;
-	bool have_one = false;
-
-	// try the non-bounded objects
-	for( j = nonboundedobjects.begin(); j != nonboundedobjects.end(); ++j ) {
-		if( (*j)->intersect( r, cur ) ) {
-			if( !have_one )
-				have_one = true;
-			i.push(cur);
-		}
+	if( bspTree) {
+		delete bspTree;
 	}
-
-	// try the bounded objects
-	for( j = boundedobjects.begin(); j != boundedobjects.end(); ++j ) {
-		if( (*j)->intersect( r, cur ) ) {
-			if( !have_one )
-				have_one = true;
-			i.push(cur);
-		}
-	}
-
-
-	return have_one;
 }
 
 // Get any intersection with an object.  Return information about the 
@@ -190,12 +164,23 @@ bool Scene::intersect( const ray& r, isect& i ) const
 		}
 	}
 
-	// try the bounded objects
-	for( j = boundedobjects.begin(); j != boundedobjects.end(); ++j ) {
-		if( (*j)->intersect( r, cur ) ) {
+	if(BSPAccel) {
+		if(bspTree->intersect(r, cur)) {
 			if( !have_one || (cur.t < i.t) ) {
 				i = cur;
 				have_one = true;
+			}
+		}
+	}
+	else {
+
+		// try the bounded objects
+		for( j = boundedobjects.begin(); j != boundedobjects.end(); ++j ) {
+			if( (*j)->intersect( r, cur ) ) {
+				if( !have_one || (cur.t < i.t) ) {
+					i = cur;
+					have_one = true;
+				}
 			}
 		}
 	}
@@ -231,7 +216,12 @@ void Scene::initScene()
 		else
 			nonboundedobjects.push_back(*j);
 	}
-	ambient_light = new AmbientLight(this, vec3f(1.0, 1.0, 1.0));
+	if(bspTree) {
+		delete bspTree;
+	}
+	bspTree = new BSPTree(this);
+	bspTree->build();
+	ambient_light = new AmbientLight(this, vec3f(0.0, 0.0, 0.0));
 }
 
 void Scene::set(AmbientLight* light)

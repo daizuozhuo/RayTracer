@@ -9,6 +9,6 @@ RayTracer
 - [x] refining spot light
 - [x] warn mode
 - [x] Anti-alias
-- [ ] BSP accelerate
+- [x] BSP accelerate
 - [ ] shadow att accerlerate
 - [x] adaptive termination

@@ -39,6 +39,7 @@ public:
 	Fl_Slider*			m_threshSlider;
 
 	Fl_Check_Button*	m_rayVisualButton;
+	Fl_Check_Button*	m_bspAccelButton;
 
 	Fl_Button*			m_renderButton;
 	Fl_Button*			m_stopButton;
@@ -56,6 +57,7 @@ public:
 	float		getThresh();
 	int			getSampleSize();
 	bool		getRayVisual();
+	bool		getBSPAccel();
 
 private:
 	RayTracer*	raytracer;
@@ -68,6 +70,7 @@ private:
 	float		m_fCutoff;
 	float		m_fThresh;
 	bool		m_bRayVisual;
+	bool		m_bBSPAccel;
 
 // static class members
 	static Fl_Menu_Item menuitems[];
@@ -93,6 +96,7 @@ private:
 	static void cb_threshSlides(Fl_Widget* o, void *v);
 
 	static void cb_rayVisualCheck(Fl_Widget* o, void* v);
+	static void cb_BSPAccelCheck(Fl_Widget* o, void* v);
 
 	static void cb_render(Fl_Widget* o, void* v);
 	static void cb_stop(Fl_Widget* o, void* v);

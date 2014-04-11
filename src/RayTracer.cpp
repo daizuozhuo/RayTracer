@@ -231,6 +231,10 @@ void RayTracer::setDisp(bool visual) {
 	ray_visual = visual;
 }
 
+void RayTracer::setAccel(bool acc) {
+	scene->setBSP(acc);
+}
+
 void RayTracer::traceSetup( int w, int h, int d, float scale, float thresh )
 {
 	if( buffer_width != w || buffer_height != h )

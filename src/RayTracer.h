@@ -48,6 +48,7 @@ public:
 	void setMode(enum TraceMode m);
 	void setSampleSize(int size);
 	void setDisp(bool visual);
+	void setAccel(bool acc);
 
 	void setSpotP(int p);
 	void setCutoff(float c);

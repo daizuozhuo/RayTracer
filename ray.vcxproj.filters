@@ -54,65 +54,68 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\getopt.cpp" >
+    <ClCompile Include="src\getopt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp" >
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RayTracer.cpp" >
+    <ClCompile Include="src\RayTracer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\TraceGLWindow.cpp" >
+    <ClCompile Include="src\ui\TraceGLWindow.cpp">
       <Filter>Source Files\ui</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\TraceUI.cpp" >
+    <ClCompile Include="src\ui\TraceUI.cpp">
       <Filter>Source Files\ui</Filter>
     </ClCompile>
-    <ClCompile Include="src\fileio\bitmap.cpp" >
+    <ClCompile Include="src\fileio\bitmap.cpp">
       <Filter>Source Files\fileio</Filter>
     </ClCompile>
-    <ClCompile Include="src\fileio\parse.cpp" >
+    <ClCompile Include="src\fileio\parse.cpp">
       <Filter>Source Files\fileio</Filter>
     </ClCompile>
-    <ClCompile Include="src\fileio\read.cpp" >
+    <ClCompile Include="src\fileio\read.cpp">
       <Filter>Source Files\fileio</Filter>
     </ClCompile>
-    <ClCompile Include="src\vecmath\vecmath.cpp" >
+    <ClCompile Include="src\vecmath\vecmath.cpp">
       <Filter>Source Files\vecmath</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\camera.cpp" >
+    <ClCompile Include="src\scene\camera.cpp">
       <Filter>Source Files\scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\light.cpp" >
+    <ClCompile Include="src\scene\light.cpp">
       <Filter>Source Files\scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\material.cpp" >
+    <ClCompile Include="src\scene\material.cpp">
       <Filter>Source Files\scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\ray.cpp" >
+    <ClCompile Include="src\scene\ray.cpp">
       <Filter>Source Files\scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\scene.cpp" >
+    <ClCompile Include="src\scene\scene.cpp">
       <Filter>Source Files\scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneObjects\Box.cpp" >
+    <ClCompile Include="src\SceneObjects\Box.cpp">
       <Filter>Source Files\SceneObjects</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneObjects\Cone.cpp" >
+    <ClCompile Include="src\SceneObjects\Cone.cpp">
       <Filter>Source Files\SceneObjects</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneObjects\Cylinder.cpp" >
+    <ClCompile Include="src\SceneObjects\Cylinder.cpp">
       <Filter>Source Files\SceneObjects</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneObjects\Sphere.cpp" >
+    <ClCompile Include="src\SceneObjects\Sphere.cpp">
       <Filter>Source Files\SceneObjects</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneObjects\Square.cpp" >
+    <ClCompile Include="src\SceneObjects\Square.cpp">
       <Filter>Source Files\SceneObjects</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneObjects\trimesh.cpp" >
+    <ClCompile Include="src\SceneObjects\trimesh.cpp">
       <Filter>Source Files\SceneObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\BSPTree.cpp">
+      <Filter>Source Files\scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="src\SceneObjects\trimesh.h">
       <Filter>Header Files\SceneObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\BSPTree.h">
+      <Filter>Header Files\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
