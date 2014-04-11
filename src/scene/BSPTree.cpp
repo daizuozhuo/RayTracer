@@ -216,7 +216,7 @@ bool BSPTreeNode::intersect(const ray& r, isect& i, const BSPTreeNode*& next) co
 	box.intersect(r, tmin, tmax);
 	tt = tmax + 1;
 	for( j = objects.begin(); j != objects.end(); ++j ) {
-		if( (*j)->intersect( r, cur ) && cur.t < tmax ) {
+		if( (*j)->intersect( r, cur ) && cur.t <= tmax + RAY_EPSILON ) {
 			if( !have_one || (cur.t < i.t) ) {
 				i = cur;
 				have_one = true;
@@ -256,8 +256,9 @@ bool BSPTreeNode::intersect(const ray& r, isect& i, const BSPTreeNode*& next) co
 		next = NULL;
 		ray rr(r.at(tmax), r.getDirection());
 		for(int m = 0; m < 6; m++) {
-			if(sibling[m] && sibling[m]->box.intersect(rr, tmin, tmax) && tmin > -RAY_EPSILON && tmin < tt) {
+			if(sibling[m] && sibling[m]->box.intersect(rr, tmin, tmax) && tmin >= -RAY_EPSILON && tmin < tt) {
 				next = sibling[m]->locate(rr.at(tmin), r.getDirection(), m);
+				tt = tmin;
 			}
 		}
 	}

@@ -45,7 +45,7 @@ enum BSPTreeNodeType {
 	BSP_INODE
 };
 
-#define BSPTREE_MAX_DEPTH (2)
+#define BSPTREE_MAX_DEPTH (8)
 
 class BSPTreeNode {
 	public:
