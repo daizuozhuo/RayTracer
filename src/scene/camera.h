@@ -15,6 +15,7 @@ public:
     void setAspectRatio( double );
 
     double getAspectRatio() { return aspectRatio; }
+	void getUVL(vec3f& uu, vec3f& vv, vec3f& ll) const {uu = u; vv = v; ll = look;}
 private:
     mat3f m;                     // rotation matrix
     double normalizedHeight;    // dimensions of image place at unit dist from eye

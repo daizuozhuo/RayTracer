@@ -244,8 +244,14 @@ bool RayTracer::loadScene( char* fn )
 }
 
 void RayTracer::angleToSphere(vec3f di, double& u, double &v) const {
-	u = atan2(di[1], di[0]) + M_PI;
-	v = acos(di[2]);
+	vec3f uu, vv, ll;
+	scene->getCamera()->getUVL(uu, vv, ll);
+	vec3f dd;
+	dd[0] = ll.dot(di);
+	dd[1] = uu.dot(di);
+	dd[2] = vv.dot(di);
+	u = atan2(dd[1], dd[0]) + M_PI;
+	v = acos(dd[2]);
 }
 
 void RayTracer::setMode(enum TraceMode m) {
