@@ -299,6 +299,8 @@ BSPTree::~BSPTree() {
 
 void BSPTree::build() {
 	BoundingBox b = s->getBound();
+	b.min -= vec3f(0.5, 0.5, 0.5);
+	b.max += vec3f(0.5, 0.5, 0.5);
 	root = new BSPTreeNode(this, b.min[0], b.min[1], b.min[2], b.max[0] - b.min[0], b.max[1] - b.min[1], b.max[2] - b.min[2]);
 	root->build(s->boundedobjects, BSPTREE_MAX_DEPTH);
 }
@@ -319,6 +321,7 @@ bool BSPTree::intersect(const ray& r, isect &i) const {
 		tmin = 0;
 	}
 	startp = root->locate(rr.getPosition(), rr.getDirection());
+	//Move rr a little bit back
 	while(!startp->intersect(rr, i, startp)) {
 		if(!startp) {
 			return false;
