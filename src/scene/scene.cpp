@@ -227,7 +227,9 @@ void Scene::initScene()
 	}
 	bspTree = new BSPTree(this);
 	bspTree->build();
-	ambient_light = new AmbientLight(this, vec3f(0.0, 0.0, 0.0));
+	if(!ambient_light) {
+		ambient_light = new AmbientLight(this, vec3f(0.0, 0.0, 0.0));
+	}
 }
 
 void Scene::set(AmbientLight* light)
