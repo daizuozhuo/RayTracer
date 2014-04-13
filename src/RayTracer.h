@@ -18,6 +18,7 @@ enum TraceMode {
 };
 
 #define SAMPLE_DELTA	0.01f
+#define M_PI			(3.1415926535f)
 
 class RayTracer
 {
@@ -54,6 +55,10 @@ public:
 	void setCutoff(float c);
 	bool sceneLoaded();
 
+	void angleToSphere(vec3f di, double& u, double &v) const;
+	void loadBGImage(char *fn);
+	void setBG(bool b) { m_bBackground = b; }
+
 private:
 	unsigned char *buffer;
 	int buffer_width, buffer_height;
@@ -68,6 +73,10 @@ private:
 	float threshold;
 
 	bool m_bSceneLoaded;
+
+	bool m_bBackground;
+	int bg_width, bg_height;
+	unsigned char *bg;
 
 	vec3f n_ray;
 };

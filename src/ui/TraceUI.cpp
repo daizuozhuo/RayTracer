@@ -41,6 +41,16 @@ void TraceUI::cb_load_scene(Fl_Menu_* o, void* v)
 	}
 }
 
+void TraceUI::cb_load_bg(Fl_Menu_* o, void* v) {
+	TraceUI* pUI=whoami(o);
+
+	char *newfile = fl_file_chooser("Open Image?", "*.bmp", NULL);
+
+	if (newfile != NULL) {
+		pUI->raytracer->loadBGImage(newfile);
+	}
+}
+
 void TraceUI::cb_save_image(Fl_Menu_* o, void* v) 
 {
 	TraceUI* pUI=whoami(o);
@@ -129,6 +139,11 @@ void TraceUI::cb_rayVisualCheck(Fl_Widget* o, void* v)
 void TraceUI::cb_BSPAccelCheck(Fl_Widget* o, void* v)
 {
 	((TraceUI*)(o->user_data()))->m_bBSPAccel=bool( ((Fl_Check_Button *)o)->value() ) ;
+}
+
+void TraceUI::cb_useBGCheck(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->raytracer->setBG(bool( ((Fl_Check_Button *)o)->value() )) ;
 }
 
 void TraceUI::cb_modeChoice(Fl_Widget* o, void* v)
@@ -282,6 +297,7 @@ Fl_Menu_Item TraceUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
 		{ "&Load Scene...",	FL_ALT + 'l', (Fl_Callback *)TraceUI::cb_load_scene },
 		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)TraceUI::cb_save_image },
+		{ "&Load Background Image...",	FL_ALT + 'b', (Fl_Callback *)TraceUI::cb_load_bg },
 		{ "&Exit",			FL_ALT + 'e', (Fl_Callback *)TraceUI::cb_exit },
 		{ 0 },
 
@@ -311,7 +327,7 @@ TraceUI::TraceUI() {
 	m_nSpotP = 128;
 	m_fCutoff = 0.2;
 	m_fThresh = 0.00001;
-	m_mainWindow = new Fl_Window(100, 40, 380, 290, "Ray <Not Loaded>");
+	m_mainWindow = new Fl_Window(100, 40, 380, 315, "Ray <Not Loaded>");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
 		// install menu bar
 		m_menubar = new Fl_Menu_Bar(0, 0, 380, 25);
@@ -428,6 +444,13 @@ TraceUI::TraceUI() {
 		m_rayVisualButton->labelfont(FL_COURIER);
 		m_rayVisualButton->value(1);
 		m_rayVisualButton->callback(cb_BSPAccelCheck);
+
+		// install bsp accel button
+		m_useBGButton = new Fl_Check_Button(10, 280, 180, 20, "Use Background Image");
+		m_useBGButton->user_data((void*)(this));
+		m_useBGButton->labelfont(FL_COURIER);
+		m_useBGButton->value(0);
+		m_useBGButton->callback(cb_useBGCheck);
 
 		m_renderButton = new Fl_Button(280, 52, 70, 25, "&Render");
 		m_renderButton->user_data((void*)(this));

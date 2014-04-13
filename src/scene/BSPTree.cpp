@@ -255,13 +255,37 @@ bool BSPTreeNode::intersect(const ray& r, isect& i, const BSPTreeNode*& next) co
 		}*/
 		next = NULL;
 		ray rr(r.at(tmax), r.getDirection());
+		vec3f di = r.getDirection();
 		for(int m = 0; m < 6; m++) {
+			//In case vertex
+			if(di[0] < RAY_EPSILON && m == 0) {
+				continue;
+			}
+			else if(di[0] > -RAY_EPSILON && m == 3) {
+				continue;
+			}
+			if(di[1] < RAY_EPSILON && m == 5) {
+				continue;
+			}
+			else if(di[1] > -RAY_EPSILON && m == 2) {
+				continue;
+			}
+			if(di[2] < RAY_EPSILON && m == 1) {
+				continue;
+			}
+			else if(di[2] > -RAY_EPSILON && m == 4) {
+				continue;
+			}
 			if(sibling[m] && sibling[m]->box.intersect(rr, tmin, tmax) && tmin >= -RAY_EPSILON && tmin < tt) {
 				next = sibling[m]->locate(rr.at(tmin), r.getDirection(), m);
 				tt = tmin;
 			}
 		}
-	}
+	}/*
+	if(next) {
+		printf("%lf %lf %lf %lf %lf %lf\n===>\n", x, y, z, w, d ,h);
+		printf("%lf %lf %lf %lf %lf %lf\n\n", next->x, next->y, next->z, next->w, next->d ,next->h);
+	}*/
 	return have_one;
 }
 

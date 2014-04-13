@@ -8,6 +8,7 @@
 #include "scene/ray.h"
 #include "fileio/read.h"
 #include "fileio/parse.h"
+#include "fileio/bitmap.h"
 
 // Trace a top-level ray through normalized window coordinates (x,y)
 // through the projection plane, and out into the scene.  All we do is
@@ -147,8 +148,18 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		// No intersection.  This ray travels to infinity, so we color
 		// it according to the background color, which in this (simple) case
 		// is just black.
-
-		return vec3f( 0.0, 0.0, 0.0 );
+		if(m_bBackground && bg) {
+			double u, v;
+			angleToSphere(r.getDirection(), u, v);
+			//Scale to [0, 1];
+			u /= 2 * M_PI;
+			v /= M_PI;
+			int tx = int(u * bg_width), ty = bg_height - int(v * bg_height);
+			return vec3f(bg[3 * (ty * bg_width + tx)] / 255.0, bg[3 * (ty * bg_width + tx) + 1] / 255.0, bg[3 * (ty * bg_width + tx) + 2] / 255.0);
+		}
+		else {
+			return vec3f( 0.0, 0.0, 0.0 );
+		}
 	}
 }
 
@@ -162,6 +173,8 @@ RayTracer::RayTracer()
 	ray_visual = false;
 
 	m_bSceneLoaded = false;
+	m_bBackground = false;
+	bg = NULL;
 }
 
 
@@ -186,6 +199,17 @@ double RayTracer::aspectRatio()
 bool RayTracer::sceneLoaded()
 {
 	return m_bSceneLoaded;
+}
+
+void RayTracer::loadBGImage( char* fn ) {
+	unsigned char *data;
+	if( (data = readBMP(fn, bg_width, bg_height)) == NULL) {
+		fl_alert( "Can't load bitmap file " );
+	}
+	if(bg) {
+		delete [] bg;
+	}
+	bg = data;
 }
 
 bool RayTracer::loadScene( char* fn )
@@ -217,6 +241,11 @@ bool RayTracer::loadScene( char* fn )
 	m_bSceneLoaded = true;
 
 	return true;
+}
+
+void RayTracer::angleToSphere(vec3f di, double& u, double &v) const {
+	u = atan2(di[1], di[0]) + M_PI;
+	v = acos(di[2]);
 }
 
 void RayTracer::setMode(enum TraceMode m) {

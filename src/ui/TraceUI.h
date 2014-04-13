@@ -40,6 +40,7 @@ public:
 
 	Fl_Check_Button*	m_rayVisualButton;
 	Fl_Check_Button*	m_bspAccelButton;
+	Fl_Check_Button*	m_useBGButton;
 
 	Fl_Button*			m_renderButton;
 	Fl_Button*			m_stopButton;
@@ -79,6 +80,7 @@ private:
 	static TraceUI* whoami(Fl_Menu_* o);
 
 	static void cb_load_scene(Fl_Menu_* o, void* v);
+	static void cb_load_bg(Fl_Menu_* o, void* v);
 	static void cb_save_image(Fl_Menu_* o, void* v);
 	static void cb_exit(Fl_Menu_* o, void* v);
 	static void cb_about(Fl_Menu_* o, void* v);
@@ -97,6 +99,7 @@ private:
 
 	static void cb_rayVisualCheck(Fl_Widget* o, void* v);
 	static void cb_BSPAccelCheck(Fl_Widget* o, void* v);
+	static void cb_useBGCheck(Fl_Widget* o, void* v);
 
 	static void cb_render(Fl_Widget* o, void* v);
 	static void cb_stop(Fl_Widget* o, void* v);

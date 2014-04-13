@@ -1,12 +1,13 @@
 //
 // bitmap.cpp
 //
-// handle MS bitmap I/O. For portability, we don't use the data structure defined in Windows.h
-// However, there is some strange thing, the side of our structure is different from what it 
-// should though we define it in the same way as MS did. So, there is a hack, we use the hardcoded
-// constanr, 14, instead of the sizeof to calculate the size of the structure.
-// You are not supposed to worry about this part. However, I will appreciate if you find out the
-// reason and let me know. Thanks.
+// handle MS bitmap I/O. For portability, we don't use the data structure 
+// defined in Windows.h. However, there is some strange thing, the size of our 
+// structure is different from what it should be though we define it in the 
+// same way as MS did. So, there is a hack, we use the hardcoded constant, 14, 
+// instead of the sizeof to calculate the size of the structure.  You are not 
+// supposed to worry about this part. However, I will appreciate if you find 
+// out the reason and let me know. Thanks.
 //
 
 #include "bitmap.h"
@@ -14,7 +15,10 @@
 BMP_BITMAPFILEHEADER bmfh; 
 BMP_BITMAPINFOHEADER bmih; 
 
-unsigned char *readBMP(char *fname, int& width, int& height)
+// Bitmap data returned is (R,G,B) tuples in row-major order.
+unsigned char* readBMP(char*	fname, 
+					   int&		width,
+					   int&		height)
 { 
 	FILE* file; 
 	BMP_DWORD pos; 
@@ -23,11 +27,14 @@ unsigned char *readBMP(char *fname, int& width, int& height)
 		return NULL; 
 	 
 //	I am doing fread( &bmfh, sizeof(BMP_BITMAPFILEHEADER), 1, file ) in a safe way. :}
+	fread( &bmfh, sizeof(BMP_BITMAPFILEHEADER), 1, file );
+	/*
 	fread( &(bmfh.bfType), 2, 1, file); 
 	fread( &(bmfh.bfSize), 4, 1, file); 
 	fread( &(bmfh.bfReserved1), 2, 1, file); 
 	fread( &(bmfh.bfReserved2), 2, 1, file); 
 	fread( &(bmfh.bfOffBits), 4, 1, file); 
+	*/
 
 	pos = bmfh.bfOffBits; 
  
@@ -60,9 +67,9 @@ unsigned char *readBMP(char *fname, int& width, int& height)
  
 	unsigned char *data = new unsigned char [bytes]; 
 
-	int foo = fread( data, bytes, 1, file ); 
+	int result = fread( data, bytes, 1, file ); 
 	
-	if (!foo) {
+	if (!result) {
 		delete [] data;
 		return NULL;
 	}
@@ -97,7 +104,10 @@ unsigned char *readBMP(char *fname, int& width, int& height)
 	return data; 
 } 
  
-void writeBMP(char *iname, int width, int height, unsigned char *data) 
+void writeBMP(char*				iname,
+			  int				width, 
+			  int				height, 
+			  unsigned char*	data) 
 { 
 	int bytes, pad;
 	bytes = width * 3;
@@ -109,8 +119,7 @@ void writeBMP(char *iname, int width, int height, unsigned char *data)
 	bmfh.bfSize = sizeof(BMP_BITMAPFILEHEADER) + sizeof(BMP_BITMAPINFOHEADER) + bytes;
 	bmfh.bfReserved1 = 0;
 	bmfh.bfReserved2 = 0;
-	bmfh.bfOffBits = /*hack sizeof(BMP_BITMAPFILEHEADER)=14, sizeof doesn't work?*/ 
-					 14 + sizeof(BMP_BITMAPINFOHEADER);
+	bmfh.bfOffBits = sizeof(BMP_BITMAPFILEHEADER) + sizeof(BMP_BITMAPINFOHEADER);
 
 	bmih.biSize = sizeof(BMP_BITMAPINFOHEADER);
 	bmih.biWidth = width;
@@ -124,16 +133,18 @@ void writeBMP(char *iname, int width, int height, unsigned char *data)
 	bmih.biClrUsed = 0;
 	bmih.biClrImportant = 0;
 
-	FILE *foo=fopen(iname, "wb"); 
+	FILE *outFile=fopen(iname, "wb"); 
 
-	//	fwrite(&bmfh, sizeof(BMP_BITMAPFILEHEADER), 1, foo);
-	fwrite( &(bmfh.bfType), 2, 1, foo); 
-	fwrite( &(bmfh.bfSize), 4, 1, foo); 
-	fwrite( &(bmfh.bfReserved1), 2, 1, foo); 
-	fwrite( &(bmfh.bfReserved2), 2, 1, foo); 
-	fwrite( &(bmfh.bfOffBits), 4, 1, foo); 
+	fwrite(&bmfh, sizeof(BMP_BITMAPFILEHEADER), 1, outFile);
+	/*
+	fwrite( &(bmfh.bfType), 2, 1, outFile); 
+	fwrite( &(bmfh.bfSize), 4, 1, outFile); 
+	fwrite( &(bmfh.bfReserved1), 2, 1, outFile); 
+	fwrite( &(bmfh.bfReserved2), 2, 1, outFile); 
+	fwrite( &(bmfh.bfOffBits), 4, 1, outFile); 
+	*/
 
-	fwrite(&bmih, sizeof(BMP_BITMAPINFOHEADER), 1, foo); 
+	fwrite(&bmih, sizeof(BMP_BITMAPINFOHEADER), 1, outFile); 
 
 	bytes /= height;
 	unsigned char* scanline = new unsigned char [bytes];
@@ -146,10 +157,10 @@ void writeBMP(char *iname, int width, int height, unsigned char *data)
 			scanline[i*3] = scanline[i*3+2];
 			scanline[i*3+2] = temp;
 		}
-		fwrite( scanline, bytes, 1, foo);
+		fwrite( scanline, bytes, 1, outFile);
 	}
 
 	delete [] scanline;
 
-	fclose(foo);
+	fclose(outFile);
 } 

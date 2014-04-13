@@ -42,7 +42,19 @@ class PointLight
 {
 public:
 	PointLight( Scene *scene, const vec3f& pos, const vec3f& color, const vec3f& coeff )
-		: Light( scene, color ), position( pos ), atten_coeff(coeff) {}
+		: Light( scene, color ), position( pos ), atten_coeff(coeff) {
+		//10 times newton's method should give good result
+			double x, xp = 0, dy, y;
+			double T = 1.0/RAY_EPSILON;
+			int i;
+			for(i = 0; i < 10; i++) {
+				y = atten_coeff.dot(vec3f(1.0, xp, xp * xp)) - T;
+				dy = atten_coeff.dot(vec3f(0.0, 1.0, 2 * xp));
+				x = xp - y / dy;
+				xp = x;
+			}
+			cut_distance = xp;
+	}
 	virtual vec3f shadowAttenuation(const vec3f& P) const;
 	virtual double distanceAttenuation( const vec3f& P ) const;
 	virtual vec3f getColor( const vec3f& P ) const;
@@ -51,6 +63,7 @@ public:
 protected:
 	vec3f position;
 	vec3f atten_coeff;
+	double cut_distance;
 };
 
 class SpotLight 

@@ -59,7 +59,7 @@ vec3f PointLight::getDirection( const vec3f& P ) const
 vec3f PointLight::shadowAttenuation(const vec3f& P) const
 {
     vec3f d = getDirection(P);
-	float dis = (position - P).length();
+	float dis = min((position - P).length(), cut_distance);
 	vec3f col = getColor(P);
 	ray r(P, d);
 	isect i;

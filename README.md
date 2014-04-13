@@ -10,5 +10,6 @@ RayTracer
 - [x] warn mode
 - [x] Anti-alias
 - [x] BSP accelerate
-- [ ] shadow att accerlerate
+- [x] shadow att accerlerate
 - [x] adaptive termination
+- [x] skysphere background image

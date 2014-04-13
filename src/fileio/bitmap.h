@@ -17,6 +17,7 @@ typedef unsigned short	BMP_WORD;
 typedef unsigned int	BMP_DWORD; 
 typedef int				BMP_LONG; 
  
+#pragma pack(push, 1) //align by 1 byte
 typedef struct { 
 	BMP_WORD	bfType; 
 	BMP_DWORD	bfSize; 
@@ -38,9 +39,10 @@ typedef struct {
 	BMP_DWORD	biClrUsed; 
 	BMP_DWORD	biClrImportant; 
 } BMP_BITMAPINFOHEADER; 
+#pragma pack(pop)
 
 // global I/O routines
-extern unsigned char *readBMP(char *fname, int& width, int& height);
-extern void writeBMP(char *iname, int width, int height, unsigned char *data); 
+extern unsigned char* readBMP( char* fname, int& width, int& height );
+extern void writeBMP( char* iname, int width, int height, unsigned char* data ); 
 
 #endif
